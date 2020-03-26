@@ -24,5 +24,5 @@ module.exports = app => {
     // Create a new Tutorial
     router.delete("/", tournaments.deleteAll);
 
-    app.use('/api/tutorials', router);
+    app.use('/api/tournaments', router);
 };

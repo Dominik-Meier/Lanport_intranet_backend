@@ -1,5 +1,5 @@
 const db = require("../models");
-const Tournament = db.tournaments;
+const Tournament = db.tournament;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Tournament

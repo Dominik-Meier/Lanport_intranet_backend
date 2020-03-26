@@ -14,13 +14,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = require("./app/models");
 db.sequelize.sync();
 
+// For Development Force resync
+// db.sequelize.sync({ force: true }).then(() => {
+//     console.log("Drop and re-sync db.");
+// });
+
 require("./app/routes/tournament.routes")(app);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
 app.get('/', (req, res) => res.send('Hello World!'));
-
-
-db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-});
