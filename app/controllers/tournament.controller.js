@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Tournament
 exports.create = (req, res) => {
-    if (!req.body.title) {
+    if (!req.body.name) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     }
 
     const tournament = {
-        name: req.body.title,
+        name: req.body.name,
         description: req.body.description,
         published: req.body.published ? req.body.published : false,
         lanpartyId: req.body.lanpartyId ? req.body.lanpartyId : null
@@ -33,8 +33,8 @@ exports.create = (req, res) => {
 
 // Retrieve all Tournaments from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    const name = req.query.name;
+    var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
     Tournament.findAll({ where: condition })
         .then(data => {
@@ -102,7 +102,7 @@ exports.delete = (req, res) => {
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Tournament with id=${id}. Maybe Tutorial was not found!`
+                    message: `Cannot delete Tournament with id=${id}. Maybe Tournament was not found!`
                 });
             }
         })
