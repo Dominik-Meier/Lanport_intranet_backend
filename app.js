@@ -16,6 +16,8 @@ db.sequelize.sync();
 
 require("./app/routes/lanparty.routes")(app);
 require("./app/routes/tournament.routes")(app);
+require("./app/routes/gamemode.routes")(app);
+require("./app/routes/tournamenttype.routes")(app);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
