@@ -1,5 +1,19 @@
-const dbConfig = require("../config/db.config.js");
+const dbConfigs = require("../config/db.config.js");
 const Sequelize = require("sequelize")
+const config = require('../../app');
+
+let dbConfig;
+
+if(config === 'dev') {
+    dbConfig = dbConfigs.dev
+} else if (config === 'testing') {
+    dbConfig = dbConfigs.testing
+} else if (config === 'prod') {
+    dbConfig = dbConfigs.prod
+} else {
+    dbConfig = dbConfigs.dev
+}
+
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,

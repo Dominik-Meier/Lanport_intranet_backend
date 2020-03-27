@@ -1,5 +1,9 @@
 // https://bezkoder.com/node-js-express-sequelize-mysql/
 
+// Load start args and export it for db config!
+const config = process.argv[2];
+module.exports = config;
+
 //App imports
 const express = require('express');
 const bodyParser = require("body-parser");
@@ -15,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Load models and setup DB, DB is set up auto when tables are not existing!
+// process.argv[2] is taking the config argument and passing it to the db setup
 const db = require("./app/models");
 db.sequelize.sync();
 
