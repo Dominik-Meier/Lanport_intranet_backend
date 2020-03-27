@@ -12,9 +12,10 @@ exports.create = (req, res) => {
     }
 
     const tournament = {
-        title: req.body.title,
+        name: req.body.title,
         description: req.body.description,
-        published: req.body.published ? req.body.published : false
+        published: req.body.published ? req.body.published : false,
+        lanpartyId: req.body.lanpartyId ? req.body.lanpartyId : null
     };
 
     Tournament.create(tournament)

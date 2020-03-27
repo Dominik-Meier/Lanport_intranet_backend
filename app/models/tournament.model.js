@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Tournament = sequelize.define("tournament", {
-        title: {
+        name: {
             type: Sequelize.STRING
         },
         description: {
@@ -8,8 +8,18 @@ module.exports = (sequelize, Sequelize) => {
         },
         published: {
             type: Sequelize.BOOLEAN
+        },
+        lanpartyId: {
+            type: Sequelize.INTEGER,
+        },
+        gamemodeId: {
+            type: Sequelize.INTEGER,
+        },
+        tournamentTypeId: {
+            type: Sequelize.INTEGER,
         }
     });
 
     return Tournament;
 };
+

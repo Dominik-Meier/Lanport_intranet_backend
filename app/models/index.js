@@ -1,5 +1,4 @@
 const dbConfig = require("../config/db.config.js");
-
 const Sequelize = require("sequelize")
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -20,6 +19,21 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.tournament = require("./tournament.model.js")(sequelize, Sequelize);
+db.lanparty = require("./lanparty.model.js") (sequelize, Sequelize);
+db.gamemode = require("./gamemode.model.js") (sequelize, Sequelize);
+db.tournamentType = require("./tournamenttype.model.js") (sequelize, Sequelize);
+db.tournament = require("./tournament.model.js") (sequelize, Sequelize);
+
+// Associations here
+db.lanparty.hasMany(db.tournament);
+db.tournament.belongsTo(db.lanparty);
+
+db.gamemode.hasMany(db.tournament);
+db.tournament.belongsTo(db.gamemode);
+
+db.tournamentType.hasMany(db.tournament);
+db.tournament.belongsTo(db.tournamentType);
+
 
 module.exports = db;
+
