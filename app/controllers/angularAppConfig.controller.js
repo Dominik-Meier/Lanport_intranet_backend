@@ -19,7 +19,9 @@ exports.create = (req, res) => {
 
 // Find a single angularAppConfig
 exports.find = (req, res) => {
-
+    const readfile = fs.readFileSync('angularAppConfig.json', 'utf-8');
+    const resData = JSON.parse(readfile.toString());
+    res.status(200).send(resData);
 };
 
 // Update a angularAppConfig
