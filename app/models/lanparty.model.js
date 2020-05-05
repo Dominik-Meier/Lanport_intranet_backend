@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
                 notNull: true
             }
         },
-        startEnd: {
+        endDate: {
             type: Sequelize.DATE,
             allowNull: false,
             validate: {

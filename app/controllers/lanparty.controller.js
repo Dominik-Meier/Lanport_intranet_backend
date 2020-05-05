@@ -4,9 +4,9 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new lanparty
 exports.create = (req, res) => {
-    if (!req.body.name || !req.body.startDate || req.body.endDate) {
+    if (!req.body.name || !req.body.startDate || !req.body.endDate) {
         res.status(400).send({
-            message: "Content can not be empty!"
+            message: "Body can not be empty or some body value was empty!"
         });
         return;
     }
@@ -14,8 +14,8 @@ exports.create = (req, res) => {
     const lanparty = {
         name: req.body.name,
         active:  false,
-        startDate: req.body.active ? req.body.active : null,
-        endDate: req.body.active ? req.body.active : null,
+        startDate: req.body.startDate ? req.body.startDate : null,
+        endDate: req.body.endDate ? req.body.endDate : null,
     };
 
     Lanparty.create(lanparty)
