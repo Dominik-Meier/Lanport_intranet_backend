@@ -3,20 +3,11 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    // Create a new Tutorial
-    router.post("/", gamemodes.create);
-
     // Retrieve all Tutorials
     router.get("/", gamemodes.findAll);
 
-    // Retrieve a single Tutorial with id
-    router.get("/:id", gamemodes.findOne);
-
     // Update a Tutorial with id
-    router.put("/:id", gamemodes.update);
-
-    // Delete a Tutorial with id
-    router.delete("/:id", gamemodes.delete);
+    router.put("/", gamemodes.update);
 
     app.use('/api/gamemodes', router);
 };

@@ -3,23 +3,11 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    // Create a new Tutorial
-    router.post("/", lanparties.create);
-
-    // Retrieve all Tutorials
+    // Retrieve all Lanparty
     router.get("/", lanparties.findAll);
 
-    // Retrieve a single Tutorial with id
-    router.get("/:id", lanparties.findOne);
-
-    // Update a Tutorial with id
-    router.put("/:id", lanparties.update);
-
-    // Delete a Tutorial with id
-    router.delete("/:id", lanparties.delete);
-
-    // Create a new Tutorial
-    router.delete("/", lanparties.deleteAll);
+    // Update a Lanparty with id
+    router.put("/", lanparties.update);
 
     app.use('/api/lanparties', router);
 };

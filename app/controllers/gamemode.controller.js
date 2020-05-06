@@ -2,34 +2,6 @@ const db = require("../models");
 const Gamemode = db.gamemode;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new TournamentType
-exports.create = (req, res) => {
-    if (!req.body.name) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
-        return;
-    }
-
-    const gamemode = {
-        name: req.body.name,
-        game: req.body.game,
-        teamSize: req.body.teamSize,
-        rules: req.body.rules,
-    };
-
-    Gamemode.create(gamemode)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Gamemode."
-            });
-        });
-
-};
 
 // Retrieve all Gamemode from the database.
 exports.findAll = (req, res) => {
@@ -48,68 +20,35 @@ exports.findAll = (req, res) => {
         });
 };
 
-// Find a single Gamemode with an id
-exports.findOne = (req, res) => {
-    const id = req.params.id;
+// Update a Gamemode by the id in the request
+exports.update = (req, res) => {
 
-    Gamemode.findByPk(id)
-        .then(data => {
+    for (let gameMode of req.body) {
+        if(gameMode.id !== null) {
+            console.log('update gameMode')
+            Gamemode.update(gameMode, { where: {id: gameMode.id}});
+        } else if (gameMode.id === null) {
+            console.log('create new gameMode')
+            const newGameMode = {
+                name: gameMode.name,
+                game:  gameMode.game,
+                teamSize: gameMode.teamSize,
+                rules: gameMode.rules,
+            };
+            Gamemode.create(newGameMode);
+        }
+    }
+
+    Gamemode.findAll()
+        .then( data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Gamemode with id=" + id
+                message:
+                    err.message || "Some error occurred while retrieving lanpartys."
             });
         });
 };
 
-// Update a Gamemode by the id in the request
-exports.update = (req, res) => {
-    const id = req.params.id;
-
-    Gamemode.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Gamemode was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Gamemode with id=${id}. Maybe Gamemode was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Gamemode with id=" + id
-            });
-        });
-};
-
-// Delete a Gamemode with the specified id in the request
-exports.delete = (req, res) => {
-    const id = req.params.id;
-
-    Gamemode.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Gamemode was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Gamemode with id=${id}. Maybe Gamemode was not found!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Gamemode with id=" + id
-            });
-        });
-};
 
