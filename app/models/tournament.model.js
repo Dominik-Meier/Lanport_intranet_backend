@@ -6,9 +6,6 @@ module.exports = (sequelize, Sequelize) => {
         description: {
             type: Sequelize.STRING
         },
-        published: {
-            type: Sequelize.BOOLEAN
-        },
         lanpartyId: {
             type: Sequelize.INTEGER,
         },
@@ -17,7 +14,25 @@ module.exports = (sequelize, Sequelize) => {
         },
         tournamentTypeId: {
             type: Sequelize.INTEGER,
-        }
+        },
+        teamRegistration: {
+            type: Sequelize.BOOLEAN,
+        },
+        numberOfParticipants: {
+            type: Sequelize.INTEGER,
+        },
+        published: {
+            type: Sequelize.BOOLEAN
+        },
+        started: {
+            type: Sequelize.BOOLEAN,
+        },
+        startDate: {
+            type: Sequelize.DATE,
+        },
+        finished: {
+            type: Sequelize.BOOLEAN,
+        },
     });
 
     return Tournament;

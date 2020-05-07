@@ -32,6 +32,7 @@ exports.update = (req, res) => {
             const newGameMode = {
                 name: gameMode.name,
                 game:  gameMode.game,
+                elimination: gameMode.elimination,
                 teamSize: gameMode.teamSize,
                 rules: gameMode.rules,
             };
@@ -39,16 +40,7 @@ exports.update = (req, res) => {
         }
     }
 
-    Gamemode.findAll()
-        .then( data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving lanpartys."
-            });
-        });
+    res.status(200).send();
 };
 
 

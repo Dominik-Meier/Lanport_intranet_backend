@@ -3,9 +3,6 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    // Create a new Tutorial
-    router.post("/", tournaments.create);
-
     // Retrieve all Tutorials
     router.get("/", tournaments.findAll);
 
@@ -16,13 +13,10 @@ module.exports = app => {
     router.get("/:id", tournaments.findOne);
 
     // Update a Tutorial with id
+    router.put("/", tournaments.updateAll);
+
+    // Update a Tutorial with id
     router.put("/:id", tournaments.update);
-
-    // Delete a Tutorial with id
-    router.delete("/:id", tournaments.delete);
-
-    // Create a new Tutorial
-    router.delete("/", tournaments.deleteAll);
 
     app.use('/api/tournaments', router);
 };

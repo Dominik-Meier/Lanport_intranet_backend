@@ -88,47 +88,31 @@ exports.update = (req, res) => {
         });
 };
 
-// Delete a Tournament with the specified id in the request
-exports.delete = (req, res) => {
+// Update a Tournament by the id in the request
+exports.updateAll = (req, res) => {
     const id = req.params.id;
 
-    Tournament.destroy({
+    Tournament.update(req.body, {
         where: { id: id }
     })
         .then(num => {
             if (num === 1) {
                 res.send({
-                    message: "Tournament was deleted successfully!"
+                    message: "Tournament was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Tournament with id=${id}. Maybe Tournament was not found!`
+                    message: `Cannot update Tournament with id=${id}. Maybe Tournament was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Tournament with id=" + id
+                message: "Error updating Tournament with id=" + id
             });
         });
 };
 
-// Delete all Tournaments from the database.
-exports.deleteAll = (req, res) => {
-    Tournament.destroy({
-        where: {},
-        truncate: false
-    })
-        .then(nums => {
-            res.send({ message: `${nums} Tournament were deleted successfully!` });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all Tournaments."
-            });
-        });
-};
 
 // Find all published Tournaments
 exports.findAllPublished = (req, res) => {

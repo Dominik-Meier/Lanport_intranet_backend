@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
         game: {
             type: Sequelize.STRING
         },
+        elimination: {
+            type: Sequelize.STRING
+        },
         teamSize: {
             type: Sequelize.INTEGER
         },
