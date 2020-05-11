@@ -37,8 +37,22 @@ db.lanparty = require("./lanparty.model.js") (sequelize, Sequelize);
 db.gamemode = require("./gamemode.model.js") (sequelize, Sequelize);
 db.tournamentType = require("./tournamenttype.model.js") (sequelize, Sequelize);
 db.tournament = require("./tournament.model.js") (sequelize, Sequelize);
+db.user = require("./user.model") (sequelize, Sequelize);
+db.seat = require("./seat.model") (sequelize, Sequelize);
+db.session = require("./session.model") (sequelize, Sequelize);
 
-// Associations here
+// Associations User
+db.user.hasMany(db.seat);
+db.seat.belongsTo(db.user);
+
+db.lanparty.hasMany(db.seat);
+db.user.belongsTo(db.lanparty);
+
+db.user.hasMany(db.session);
+db.session.belongsTo(db.user);
+
+
+// Associations Tournaments
 db.lanparty.hasMany(db.tournament);
 db.tournament.belongsTo(db.lanparty);
 
