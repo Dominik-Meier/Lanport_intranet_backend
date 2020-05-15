@@ -46,7 +46,7 @@ db.user.hasMany(db.seat);
 db.seat.belongsTo(db.user);
 
 db.lanparty.hasMany(db.seat);
-db.user.belongsTo(db.lanparty);
+db.seat.belongsTo(db.lanparty);
 
 db.user.hasMany(db.session);
 db.session.belongsTo(db.user);

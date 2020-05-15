@@ -9,11 +9,14 @@ const request = require('request');
 exports.findOne = async (req, res) => {
     const sess  = req.params.id;
 
+
     internetAvailable({
         timeout: 3000,
         retries: 5
     }).then( () => {
         console.log("Internet");
+        // TODO check when key does not exist, what happens with the request
+        // TODO check if the api_key remains always the same or if it can change
         request.post({
                 url:'https://lanport.ch/api/sess',
                 form: {
@@ -22,10 +25,12 @@ exports.findOne = async (req, res) => {
                     send: 'sess_check'
                 }
             },
-             function(err,httpResponse,body){
+             async function(err,httpResponse,body){
                  dataJson = JSON.parse(body);
-                 const resUser = handleResponse(dataJson, sess);
-                 res.send(resUser);
+                 const resUser = await handleResponse(dataJson, sess).then( resUser => {
+                     res.send(resUser);
+                 });
+
             });
     }).
     catch( async () => {
@@ -61,37 +66,26 @@ exports.findAll = (req, res) => {
 };
 
 handleResponse = async function (data, sess) {
-    console.log(data.nickname);
     let user = await User.findOne({where: {nickname: data.nickname}});
     if(user == null) {
-        console.log('user not found, insert new user');
-            user = await User.create( { nickname: data.nickname, level: data.level} );
-            console.log(user);
+            //TODO export information per lanparty
+            //TODO implement seat -> in db table platz_nr
+            user = await User.create( { nickname: data.nickname, lanportUserId: data.id, registered: data.party.angemeldet,
+                payed: data.party.bezahlt, seat: null, level: data.level} );
             const session = await Session.create({ sess: sess, userId: user.id});
-            console.log(session);
-            // TODO creat new seating for the correct lanparty
 
+        return user;
     } else {
         //TODO creat a way to remove expired sessions
-        console.log('user found, update user and session');
-        let modified = false;
-        if (user.nickname != data.nickname) {
-            user.nickname = data.nickname;
-            modified = true;
-        }
-        if (user.level != data.level) {
-            user.level = data.level;
-            modified = true;
-        }
-        if (modified) {
-            user.save();
-        }
-        const dbSess = await Session.findOne( { where: {userId: user.id, sess: sess}});
-        if (dbSess == null) {
-            await Session.create( { sess: sess, userId: user.id});
-        }
         //TODO creat seatings for lanparty
+        user.nickname = data.nickname;
+        user.registered = data.party.angemeldet;
+        user.payed = data.party.bezahlt;
+        user.seat = null;
+        user.level = data.level;
+
+        await user.save().then( () => {});
+        return user;
     }
-    return user;
 }
 

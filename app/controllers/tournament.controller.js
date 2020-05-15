@@ -5,35 +5,6 @@ const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Tournament
-exports.create = (req, res) => {
-    if (!req.body.name) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
-        return;
-    }
-
-    const tournament = {
-        name: req.body.name,
-        description: req.body.description,
-        published: req.body.published ? req.body.published : false,
-        lanpartyId: req.body.lanpartyId ? req.body.lanpartyId : null
-    };
-
-    Tournament.create(tournament)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the tournament."
-            });
-        });
-
-};
-
 // Retrieve all Tournaments from the database.
 exports.findAll = (req, res) => {
     const name = req.query.name;

@@ -3,6 +3,18 @@ module.exports = (sequelize, Sequelize) => {
         nickname: {
             type: Sequelize.STRING,
         },
+        lanportUserId: {
+            type: Sequelize.INTEGER,
+        },
+        registered: {
+            type: Sequelize.BOOLEAN,
+        },
+        payed: {
+            type: Sequelize.BOOLEAN,
+        },
+        seat: {
+            type: Sequelize.STRING,
+        },
         level: {
             type: Sequelize.STRING,
         }
