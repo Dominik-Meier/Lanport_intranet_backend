@@ -5,6 +5,8 @@ const Op = db.Sequelize.Op;
 const internetAvailable = require("internet-available");
 const request = require('request');
 
+const cookieJar = request.jar();
+
 // Retrieve one user from the database.
 exports.findOne = async (req, res) => {
     const sess  = req.params.id;
@@ -19,6 +21,7 @@ exports.findOne = async (req, res) => {
         // TODO check if the api_key remains always the same or if it can change
         request.post({
                 url:'https://lanport.ch/api/sess',
+                jar: cookieJar,
                 form: {
                     sess: sess,
                     api_key: 'fghe456uz',
@@ -27,6 +30,7 @@ exports.findOne = async (req, res) => {
             },
              async function(err,httpResponse,body){
                  dataJson = JSON.parse(body);
+                 console.log(cookieJar);
                  const resUser = await handleResponse(dataJson, sess).then( resUser => {
                      res.send(resUser);
                  });
