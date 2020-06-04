@@ -31,6 +31,8 @@ exports.findOne = async (req, res) => {
              async function(err,httpResponse,body){
                  dataJson = JSON.parse(body);
                  console.log(cookieJar);
+                 //TODO what when sess request fails and retruns:
+                 // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
                  const resUser = await handleResponse(dataJson, sess).then( resUser => {
                      res.send(resUser);
                  });
