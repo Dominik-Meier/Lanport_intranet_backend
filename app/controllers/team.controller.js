@@ -1,5 +1,9 @@
 const db = require("../models");
 const Team = db.team;
+const Tournament = db.tournament;
+const TournamentType = db.tournamentType;
+const Lanparty = db.lanparty;
+const Gamemode = db.gamemode;
 const Op = db.Sequelize.Op;
 
 
@@ -23,17 +27,24 @@ exports.findByUser = (req, res) => {
 };
 
 
-exports.create = (req, res) => {
+exports.create = async (req, res) =>  {
     team = req.body;
+    let result;
+    console.log(team);
     if (team) {
         const newTeam = {
             name: team.name,
-            pin: team.pin
+            pin: team.pin,
+            tournamentId: team.tournament.id
         }
-        Team.create(newTeam);
+        const query = await Team.create(newTeam);
+        const id = query.getDataValue('id');
+        console.log(id);
+        //result = await Team.findOne({where: {id: id}, include: [Tournament, TournamentType, Lanparty, Gamemode]});
+        result = await Team.findOne({where: {id: id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
+        console.log(result);
     }
-
-    res.status(200).send();
+    res.status(200).send(result);
 };
 
 

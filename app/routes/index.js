@@ -7,4 +7,6 @@ module.exports = app => {
     require("./tournamenttype.routes")(app);
     require("./angularAppConfig.routes")(app);
     require("./user.routes")(app);
+    require("./team.routes")(app);
+    require("./teamMember.routes")(app);
 };

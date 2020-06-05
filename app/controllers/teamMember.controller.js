@@ -16,6 +16,9 @@ exports.findAll = (req, res) => {
         });
 };
 
+exports.findOne = (req, res) => {
+};
+
 exports.findByTournament = (req, res) => {
 };
 
