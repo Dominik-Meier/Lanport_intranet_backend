@@ -4,6 +4,7 @@ const Session = db.session;
 const Op = db.Sequelize.Op;
 const internetAvailable = require("internet-available");
 const request = require('request');
+const config = require('../../app')
 
 const cookieJar = request.jar();
 
@@ -11,47 +12,56 @@ const cookieJar = request.jar();
 exports.findOne = async (req, res) => {
     const sess  = req.params.id;
 
-
-    internetAvailable({
-        timeout: 3000,
-        retries: 5
-    }).then( () => {
-        console.log("Internet");
-        // TODO check when key does not exist, what happens with the request
-        // TODO check if the api_key remains always the same or if it can change
-        request.post({
-                url:'https://lanport.ch/api/sess',
-                jar: cookieJar,
-                form: {
-                    sess: sess,
-                    api_key: 'fghe456uz',
-                    send: 'sess_check'
-                }
-            },
-             async function(err,httpResponse,body){
-                 dataJson = JSON.parse(body);
-                 console.log(cookieJar);
-                 //TODO what when sess request fails and retruns:
-                 // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
-                 const resUser = await handleResponse(dataJson, sess).then( resUser => {
-                     res.send(resUser);
-                 });
-
-            });
-    }).
-    catch( async () => {
-        console.log("no Internet")
-        const dbSess = await Session.findOne( {where: {sess: sess}});
-        const dbUser = await User.findOne( {where: {id: dbSess.userId}});
-        if (dbUser) {
-            res.send(dbUser);
-        } else {
-            res.status(500).send({
-                message: "Some error occurred while retrieving users."
-            });
+    if(config === 'dev') {
+        const devSess = await Session.findOne( {where: {sess: sess}});
+        if (devSess) {
+            const devUser = await User.findOne( {where: {id: devSess.userId}});
+            if (devUser) {
+                console.log('send devUser');
+                res.send(devUser);
+            }
         }
-    })
+    } else {
+        internetAvailable({
+            timeout: 3000,
+            retries: 5
+        }).then( () => {
+            console.log("Internet");
+            // TODO check when key does not exist, what happens with the request
+            // TODO check if the api_key remains always the same or if it can change
+            request.post({
+                    url:'https://lanport.ch/api/sess',
+                    jar: cookieJar,
+                    form: {
+                        sess: sess,
+                        api_key: 'fghe456uz',
+                        send: 'sess_check'
+                    }
+                },
+                async function(err,httpResponse,body){
+                    dataJson = JSON.parse(body);
+                    console.log(cookieJar);
+                    //TODO what when sess request fails and retruns:
+                    // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
+                    const resUser = await handleResponse(dataJson, sess).then( resUser => {
+                        res.send(resUser);
+                    });
 
+                });
+        }).
+        catch( async () => {
+            console.log("no Internet")
+            const dbSess = await Session.findOne( {where: {sess: sess}});
+            const dbUser = await User.findOne( {where: {id: dbSess.userId}});
+            if (dbUser) {
+                res.send(dbUser);
+            } else {
+                res.status(500).send({
+                    message: "Some error occurred while retrieving users."
+                });
+            }
+        })
+    }
 };
 
 // Retrieve all users from the database.
@@ -78,10 +88,14 @@ handleResponse = async function (data, sess) {
             //TODO implement seat -> in db table platz_nr
             user = await User.create( { nickname: data.nickname, lanportUserId: data.id, registered: data.party.angemeldet,
                 payed: data.party.bezahlt, seat: null, level: data.level} );
-            const session = await Session.create({ sess: sess, userId: user.id});
+        const session = await Session.create({ sess: sess, userId: user.id});
 
         return user;
     } else {
+        let session = await Session.findOne( {where: {sess: sess, userId: user.id}});
+        if (session == null) {
+            session = await Session.create({ sess: sess, userId: user.id});
+        }
         //TODO creat a way to remove expired sessions
         //TODO creat seatings for lanparty
         user.nickname = data.nickname;
