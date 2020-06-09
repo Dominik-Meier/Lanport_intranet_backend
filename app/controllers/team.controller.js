@@ -4,6 +4,8 @@ const Tournament = db.tournament;
 const TournamentType = db.tournamentType;
 const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
+const TeamMembers = db.teamMember;
+const User = db.user;
 const Op = db.Sequelize.Op;
 
 
@@ -20,7 +22,16 @@ exports.findAll = (req, res) => {
         });
 };
 
-exports.findByTournament = (req, res) => {
+exports.findByTournament = async (req, res) => {
+    const id = req.params.id;
+    const resTeams = await Team.findAll( {where: {tournamentId: id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]})
+    for (let team of resTeams) {
+        const tm = await TeamMembers.findAll( {where: {teamId: team.id}, include: [User]});
+        team.teamMembers = tm;
+        team.setDataValue('teamMembers', tm);
+    }
+    console.log('findByTournament found teams: ', resTeams.length, resTeams);
+    res.send(resTeams);
 };
 
 exports.findByUser = (req, res) => {

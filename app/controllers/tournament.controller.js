@@ -69,7 +69,21 @@ exports.updateAll = (req, res) => {
     for (let tournament of req.body) {
         if(tournament.id !== null) {
             console.log('update tournament');
-            Tournament.update(tournament, { where: {id: tournament.id}});
+            const DBTournament = {
+                id: tournament.id,
+                name: tournament.name,
+                description: tournament.description,
+                lanpartyId: tournament.lanparty.id,
+                gamemodeId: tournament.gameMode.id,
+                tournamentTypeId: tournament.tournamentType.id,
+                teamRegistration: tournament.teamRegistration,
+                numberOfParticipants: tournament.numberOfParticipants,
+                published: tournament.published,
+                started: tournament.started,
+                startDate: tournament.startDate,
+                finished: tournament.finished,
+            };
+            Tournament.update(DBTournament, { where: {id: tournament.id}});
         } else if (tournament.id === null) {
             console.log('create new tournament');
             const newTournament = {

@@ -1,5 +1,6 @@
 const db = require("../models");
 const TeamMember = db.teamMember;
+const User = db.user;
 const Op = db.Sequelize.Op;
 
 
@@ -29,14 +30,25 @@ exports.findByUser = (req, res) => {
 };
 
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     const teamMember = req.body;
     if (teamMember) {
-        const newTeamMember = {
-            teamId: teamMember.team.id,
-            userId: teamMember.user.id
+        //TODO implement restrictions for adding to team
+        // 1. same team 2. in other team 3. fun main tournament miss matiching 4. limit of accepted members
+        const dbTeamMember = await TeamMember.findOne( {where: { teamId: teamMember.teamId, userId: teamMember.user.id}});
+
+        if (dbTeamMember) {
+            res.status(403).send('User already exits in this team');
+        } else {
+            const newTeamMember = {
+                teamId: teamMember.teamId,
+                userId: teamMember.user.id
+            }
+            let resTeamMember = await TeamMember.create(newTeamMember);
+            resTeamMember = await TeamMember.findOne( {where: {id: resTeamMember.id}, include: [User]});
+            res.status(200).send(resTeamMember);
         }
-        TeamMember.create(newTeamMember);
+
     }
 
     res.status(200).send();
