@@ -67,11 +67,12 @@ exports.update = (req, res) => {
 
 
 exports.delete = (req, res) => {
-    const teamMember = req.body;
+    console.log(req);
+    const id = req.params.id;
 
-    if(teamMember.id !== null) {
-        console.log('delete team')
-        TeamMember.destroy(teamMember, { where: {id: teamMember.id}});
+    if(id !== null) {
+        console.log('delete teamMember with id: ', id)
+        TeamMember.destroy({ where: {id: id}});
     }
     res.status(200).send();
 };
