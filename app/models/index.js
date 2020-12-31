@@ -42,6 +42,7 @@ db.seat = require("./seat.model") (sequelize, Sequelize);
 db.session = require("./session.model") (sequelize, Sequelize);
 db.team = require("./team.model") (sequelize, Sequelize);
 db.teamMember = require("./teamMember.model") (sequelize, Sequelize);
+db.tournamentParticipant = require("./tournamentParticipant.model") (sequelize, Sequelize);
 
 // Associations User
 db.user.hasMany(db.seat);
@@ -74,6 +75,14 @@ db.teamMember.belongsTo(db.team);
 
 db.user.hasMany(db.teamMember);
 db.teamMember.belongsTo(db.user);
+
+
+// Associations TournamentParticipant
+db.tournament.hasMany(db.tournamentParticipant);
+db.tournamentParticipant.belongsTo(db.tournament);
+
+db.user.hasMany(db.tournamentParticipant);
+db.tournamentParticipant.belongsTo(db.user);
 
 
 module.exports = db;

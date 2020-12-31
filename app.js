@@ -15,8 +15,8 @@ const port = 3000;
 
 //Sett app parameters and attributes
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb'}));
 
 // Load models and setup DB, DB is set up auto when tables are not existing!
 // process.argv[2] is taking the config argument and passing it to the db setup

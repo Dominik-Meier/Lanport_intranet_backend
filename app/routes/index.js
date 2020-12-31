@@ -9,4 +9,5 @@ module.exports = app => {
     require("./user.routes")(app);
     require("./team.routes")(app);
     require("./teamMember.routes")(app);
+    require("./tournamentParticipant.routes")(app);
 };
