@@ -11,7 +11,7 @@ const cookieJar = request.jar();
 // Retrieve one user from the database.
 exports.findOne = async (req, res) => {
     const sess  = req.params.id;
-
+    console.log(sess)
     if(config === 'dev') {
         const devSess = await Session.findOne( {where: {sess: sess}});
         if (devSess) {
@@ -44,6 +44,7 @@ exports.findOne = async (req, res) => {
                     //TODO what when sess request fails and retruns:
                     // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
                     const resUser = await handleResponse(dataJson, sess).then( resUser => {
+                        console.log(resUser);
                         res.send(resUser);
                     });
 
@@ -99,9 +100,9 @@ handleResponse = async function (data, sess) {
         //TODO creat a way to remove expired sessions
         //TODO creat seatings for lanparty
         user.nickname = data.nickname;
-        user.registered = data.party.angemeldet;
-        user.payed = data.party.bezahlt;
-        user.seat = null;
+        user.registered = data.party ? data.party.angemeldet : false;
+        user.payed = data.party ? data.party.bezahlt : false;
+        user.seat = '';
         user.level = data.level;
 
         await user.save().then( () => {});
