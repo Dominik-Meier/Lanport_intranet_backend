@@ -1,31 +1,9 @@
-const dbConfigs = require("../config/db.config.js");
 const Sequelize = require("sequelize")
-const config = require('../../app');
+const {dbName, basePath} = require('../../app')
 
-let dbConfig;
-
-if(config === 'dev') {
-    dbConfig = dbConfigs.dev
-} else if (config === 'testing') {
-    dbConfig = dbConfigs.testing
-} else if (config === 'prod') {
-    dbConfig = dbConfigs.prod
-} else {
-    dbConfig = dbConfigs.dev
-}
-
-
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-    host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    operatorsAliases: false,
-
-    pool: {
-        max: dbConfig.pool.max,
-        min: dbConfig.pool.min,
-        acquire: dbConfig.pool.acquire,
-        idle: dbConfig.pool.idle
-    }
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: basePath.concat("/").concat(dbName).concat(".sqlite")
 });
 
 const db = {};

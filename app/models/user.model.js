@@ -18,6 +18,8 @@ module.exports = (sequelize, Sequelize) => {
         level: {
             type: Sequelize.STRING,
         }
+    }, {
+        timestamps: false
     });
 
     return User;

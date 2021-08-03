@@ -9,6 +9,8 @@ module.exports = (sequelize, Sequelize) => {
         lanpartyId: {
             type: Sequelize.INTEGER,
         }
+    }, {
+        timestamps: false
     });
 
     return Seat;

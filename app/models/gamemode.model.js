@@ -15,6 +15,8 @@ module.exports = (sequelize, Sequelize) => {
         rules: {
             type: Sequelize.STRING,
         }
+    }, {
+        timestamps: false
     });
 
     return Gamemode;

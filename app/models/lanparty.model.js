@@ -29,6 +29,8 @@ module.exports = (sequelize, Sequelize) => {
                 notNull: true
             }
         },
+    }, {
+        timestamps: false
     });
 
     return Lanparty;

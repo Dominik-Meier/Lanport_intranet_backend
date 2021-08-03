@@ -2,7 +2,13 @@
 
 // Load start args and export it for db config!
 const config = process.argv[2];
-module.exports = config;
+const basePath = __dirname;
+
+module.exports = {
+    config, config,
+    dbName: config,
+    basePath: basePath
+};
 
 //App imports
 const express = require('express');
@@ -13,7 +19,7 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
-//Sett app parameters and attributes
+//Set app parameters and attributes
 app.use(cors());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb'}));

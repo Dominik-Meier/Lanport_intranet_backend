@@ -4,7 +4,7 @@ const Session = db.session;
 const Op = db.Sequelize.Op;
 const internetAvailable = require("internet-available");
 const request = require('request');
-const config = require('../../app')
+const {config} = require('../../app')
 
 const cookieJar = request.jar();
 
@@ -17,13 +17,12 @@ exports.findOne = async (req, res) => {
         if (devSess) {
             const devUser = await User.findOne( {where: {id: devSess.userId}});
             if (devUser) {
-                console.log('send devUser');
                 res.send(devUser);
             }
         }
     } else {
         internetAvailable({
-            timeout: 3000,
+            timeout: 500,
             retries: 5
         }).then( () => {
             console.log("Internet");

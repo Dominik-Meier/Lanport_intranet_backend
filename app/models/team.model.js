@@ -20,6 +20,8 @@ module.exports = (sequelize, Sequelize) => {
         tournamentId: {
             type: Sequelize.INTEGER,
         },
+    }, {
+        timestamps: false
     });
 
     return Team;

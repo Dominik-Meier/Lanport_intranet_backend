@@ -33,6 +33,8 @@ module.exports = (sequelize, Sequelize) => {
         finished: {
             type: Sequelize.BOOLEAN,
         },
+    }, {
+        timestamps: false
     });
 
     return Tournament;
