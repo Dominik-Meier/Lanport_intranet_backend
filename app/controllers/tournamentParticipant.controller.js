@@ -55,9 +55,8 @@ exports.create = async (req, res) => {
 
 
 exports.delete = (req, res) => {
-    console.log(req);
+    console.log("delete tournament participant");
     const id = req.params.id;
-
     if(id !== null) {
         console.log('delete TournamentParticipant with id: ', id)
         TournamentParticipant.destroy({ where: {id: id}});
