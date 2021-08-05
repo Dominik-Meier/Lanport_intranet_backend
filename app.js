@@ -5,7 +5,7 @@ const config = process.argv[2];
 const basePath = __dirname;
 
 module.exports = {
-    config, config,
+    config: config,
     dbName: config,
     basePath: basePath
 };
@@ -18,6 +18,24 @@ const cors = require("cors");
 //Create express app and port
 const app = express();
 const port = 3000;
+
+//WebSocket
+const WebSocket  = require('ws');
+const wss = new WebSocket.Server({port: 3001});
+
+wss.on('connection', ws => {
+    console.log('Client connected');
+
+    ws.on('message', msg => {
+        console.log(msg.toString());
+        wss.clients.forEach( client =>
+            client.send(msg.toString()));
+    })
+
+    ws.on('close', () =>{
+        console.log("Client disconnected");
+    })
+})
 
 //Set app parameters and attributes
 app.use(cors());
