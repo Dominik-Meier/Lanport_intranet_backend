@@ -4,11 +4,13 @@
 const config = process.argv[2];
 const basePath = __dirname;
 
+
 module.exports = {
     config: config,
     dbName: config,
-    basePath: basePath
-};
+    basePath: basePath,
+    sendMsg: sendMsg
+}
 
 //App imports
 const express = require('express');
@@ -36,6 +38,12 @@ wss.on('connection', ws => {
         console.log("Client disconnected");
     })
 })
+
+function sendMsg(msg) {
+    console.log('sending msg from new func');
+    console.log(msg);
+    wss.clients.forEach( client => client.send(JSON.stringify(msg)));
+}
 
 //Set app parameters and attributes
 app.use(cors());
