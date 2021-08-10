@@ -56,10 +56,9 @@ exports.create = async (req, res) => {
         if (dbTeamMember) {
             res.status(403).send('User already exits in this team');
         } else if (tournament.gamemode.teamSize <= dbTeam.teamMembers.length) {
-            console.log(tournament.gamemode.teamSize)
-            console.log(dbTeam.teamMembers.length)
-            console.log('Team is full')
             res.status(403).send('Team maximum size reached');
+        } else if (tournament.published === true) {
+            res.status(403).send('Tournament is not open for registration!');
         } else if (dbTeam.pin.toString() !== pin.toString()) {
             res.status(403).send('Pin does not match');
         } else if (joinedOtherTeam) {
@@ -98,32 +97,34 @@ exports.update = (req, res) => {
 
 
 exports.delete = async (req, res) => {
-    console.log(req);
     const id = req.params.id;
-
     if(id !== null) {
-        console.log('delete teamMember with id: ', id)
         const deletedTeamMember = await TeamMember.findOne( {where: {id: id}, include: [User]});
         const team = await Team.findOne( {where: {id: deletedTeamMember.teamId}, include: [{model: TeamMember, include: [User]}, {model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
-        await TeamMember.destroy({ where: {id: id}});
+        const tournament = await Tournament.findOne( {where: {id: team.tournamentId}, include: [Gamemode]});
 
-        res.status(200).send();
+        if (tournament.published === true) {
+            res.status(403).send('Tournament is not open for changes');
+        } else {
+            await TeamMember.destroy({ where: {id: id}});
 
-        const teamMemberEvent = {
-            event: 'TeamMemberLeftEvent',
-            data: JSON.stringify(deletedTeamMember)
-        }
-        sendMsg(teamMemberEvent);
+            res.status(200).send();
 
-        if (team.teamMembers.length === 1) {
-            await Team.destroy({where: {id: team.id}})
-
-            const teamDeletedEvent = {
-                event: 'TeamDeletedEvent',
-                data: JSON.stringify(team)
+            const teamMemberEvent = {
+                event: 'TeamMemberLeftEvent',
+                data: JSON.stringify(deletedTeamMember)
             }
+            sendMsg(teamMemberEvent);
 
-            setTimeout(() => {sendMsg(teamDeletedEvent)}, 100);
+            if (team.teamMembers.length === 1) {
+                await Team.destroy({where: {id: team.id}})
+
+                const teamDeletedEvent = {
+                    event: 'TeamDeletedEvent',
+                    data: JSON.stringify(team)
+                }
+                setTimeout(() => {sendMsg(teamDeletedEvent)}, 100);
+            }
         }
     }
 };

@@ -46,6 +46,8 @@ exports.create = async (req, res) =>  {
         const tournament = await Tournament.findOne( {where: {id: team.tournament.id}, include: [Team]});
         if (tournament.teams.length >= tournament.numberOfParticipants) {
             res.status(403).send('Maximum of teams reached for tournament');
+        } else if (tournament.published === true ) {
+            res.status(403).send('Tournament is not open for changes');
         } else {
             let createdTeam = await Team.create(newTeam);
             createdTeam = await Team.findOne({where: {id: createdTeam.id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
