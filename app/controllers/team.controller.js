@@ -1,4 +1,5 @@
 const db = require("../models");
+const {sendMsg} = require("../../app");
 const Team = db.team;
 const Tournament = db.tournament;
 const TournamentType = db.tournamentType;
@@ -40,22 +41,32 @@ exports.findByUser = (req, res) => {
 
 exports.create = async (req, res) =>  {
     team = req.body;
-    let result;
-    console.log(team);
     if (team) {
-        const newTeam = {
-            name: team.name,
-            pin: team.pin,
-            tournamentId: team.tournament.id
+        const newTeam = { name: team.name, pin: team.pin, tournamentId: team.tournament.id };
+        const tournament = await Tournament.findOne( {where: {id: team.tournament.id}, include: [Team]});
+        if (tournament.teams.length >= tournament.numberOfParticipants) {
+            res.status(403).send('Maximum of teams reached for tournament');
+        } else {
+            let createdTeam = await Team.create(newTeam);
+            createdTeam = await Team.findOne({where: {id: createdTeam.id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
+
+            const newTeamMember = { teamId: createdTeam.id, userId: team.teamMembers[0].user.id };
+            let createdTeamMebmer = await TeamMembers.create(newTeamMember);
+            createdTeamMebmer = await TeamMembers.findOne( {where: {id: createdTeamMebmer.id}, include: [User]});
+
+            res.status(200).send();
+            const teamEvent = {
+                event: 'TeamCreatedEvent',
+                data: JSON.stringify(createdTeam)
+            }
+            const teamMemberEvent = {
+                event: 'TeamMemberJoinedEvent',
+                data: JSON.stringify(createdTeamMebmer)
+            }
+            sendMsg(teamEvent);
+            setTimeout(() => {sendMsg(teamMemberEvent)}, 250);
         }
-        const query = await Team.create(newTeam);
-        const id = query.getDataValue('id');
-        console.log(id);
-        //result = await Team.findOne({where: {id: id}, include: [Tournament, TournamentType, Lanparty, Gamemode]});
-        result = await Team.findOne({where: {id: id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
-        console.log(result);
     }
-    res.status(200).send(result);
 };
 
 

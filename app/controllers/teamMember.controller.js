@@ -1,7 +1,12 @@
 const db = require("../models");
 const TeamMember = db.teamMember;
+const Team = db.team;
+const TournamentType = db.tournamentType;
+const Lanparty = db.lanparty;
+const Gamemode = db.gamemode;
 const User = db.user;
-const Op = db.Sequelize.Op;
+const Tournament = db.tournament;
+const {sendMsg} = require("../../app");
 
 
 exports.findAll = (req, res) => {
@@ -32,26 +37,52 @@ exports.findByUser = (req, res) => {
 
 exports.create = async (req, res) => {
     const teamMember = req.body;
+    const pin = req.query.pin;
     if (teamMember) {
-        //TODO implement restrictions for adding to team
-        // 1. same team 2. in other team 3. fun main tournament miss matiching 4. limit of accepted members
         const dbTeamMember = await TeamMember.findOne( {where: { teamId: teamMember.teamId, userId: teamMember.user.id}});
+        const dbTeam = await Team.findOne( {where: { id: teamMember.teamId}, include: [TeamMember]});
+        const allTournamentTeams = await Team.findAll( {where: {tournamentId: dbTeam.tournamentId}, include: [TeamMember]})
+        const tournament = await Tournament.findOne( {where: {id: dbTeam.tournamentId}, include: [Gamemode]});
+        let joinedOtherTeam = false;
+
+        for (let tournamentTeam of allTournamentTeams) {
+            tournamentTeam.teamMembers.find( t => {
+                if (t.userId === teamMember.user.id) {
+                    joinedOtherTeam = true;
+                }
+            });
+        }
 
         if (dbTeamMember) {
             res.status(403).send('User already exits in this team');
+        } else if (tournament.gamemode.teamSize <= dbTeam.teamMembers.length) {
+            console.log(tournament.gamemode.teamSize)
+            console.log(dbTeam.teamMembers.length)
+            console.log('Team is full')
+            res.status(403).send('Team maximum size reached');
+        } else if (dbTeam.pin.toString() !== pin.toString()) {
+            res.status(403).send('Pin does not match');
+        } else if (joinedOtherTeam) {
+          res.status(403).send('User is in other team for tournament');
         } else {
             const newTeamMember = {
                 teamId: teamMember.teamId,
                 userId: teamMember.user.id
             }
             let resTeamMember = await TeamMember.create(newTeamMember);
-            resTeamMember = await TeamMember.findOne( {where: {id: resTeamMember.id}, include: [User]});
-            res.status(200).send(resTeamMember);
+            const createdTeamMebmer = await TeamMember.findOne( {where: {id: resTeamMember.id}, include: [User]});
+            res.status(200).send();
+
+            const teamMemberEvent = {
+                event: 'TeamMemberJoinedEvent',
+                data: JSON.stringify(createdTeamMebmer)
+            }
+            sendMsg(teamMemberEvent);
         }
 
+    } else {
+        res.status(404).send('TeamMember not found');
     }
-
-    res.status(200).send();
 };
 
 
@@ -66,15 +97,35 @@ exports.update = (req, res) => {
 };
 
 
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     console.log(req);
     const id = req.params.id;
 
     if(id !== null) {
         console.log('delete teamMember with id: ', id)
-        TeamMember.destroy({ where: {id: id}});
+        const deletedTeamMember = await TeamMember.findOne( {where: {id: id}, include: [User]});
+        const team = await Team.findOne( {where: {id: deletedTeamMember.teamId}, include: [{model: TeamMember, include: [User]}, {model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]});
+        await TeamMember.destroy({ where: {id: id}});
+
+        res.status(200).send();
+
+        const teamMemberEvent = {
+            event: 'TeamMemberLeftEvent',
+            data: JSON.stringify(deletedTeamMember)
+        }
+        sendMsg(teamMemberEvent);
+
+        if (team.teamMembers.length === 1) {
+            await Team.destroy({where: {id: team.id}})
+
+            const teamDeletedEvent = {
+                event: 'TeamDeletedEvent',
+                data: JSON.stringify(team)
+            }
+
+            setTimeout(() => {sendMsg(teamDeletedEvent)}, 100);
+        }
     }
-    res.status(200).send();
 };
 
 

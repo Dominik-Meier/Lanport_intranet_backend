@@ -9,12 +9,11 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         pin: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             allowNull: false,
             validate: {
                 notNull: true,
-                min: 1000,
-                max: 9999
+                len: [4, 4],
             }
         },
         tournamentId: {
