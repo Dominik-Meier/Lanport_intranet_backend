@@ -2,12 +2,13 @@
 
 // Load start args and export it for db config!
 const config = process.argv[2];
+const dbName = process.argv[3];
 const basePath = __dirname;
 
 
 module.exports = {
     config: config,
-    dbName: config,
+    dbName: dbName,
     basePath: basePath,
     sendMsg: sendMsg
 }
@@ -60,4 +61,4 @@ require('./app/routes/index')(app);
 
 //Start listening for requests
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-app.get('/', (req, res) => res.send('This ist the Rest-API for the Lanport-Intranet, here ist nothing for you as a browser!'));
+app.get('/', (req, res) => res.send('This is the Rest-API for the Lanport-Intranet, here ist nothing for you as a browser!'));

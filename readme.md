@@ -6,9 +6,11 @@
 
 
 <h2>app.js Options</h2>
-- node app.js dev
-- node app.js testing
-- node app.js prod
+first arg mode and second is dbNam
+
+- node app.js dev dev
+- node app.js dev test
+- node app.js prod prod
 
 
 <h2>TODOs</h2>

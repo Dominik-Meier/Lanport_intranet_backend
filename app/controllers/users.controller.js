@@ -13,14 +13,18 @@ exports.findOne = async (req, res) => {
     const sess  = req.params.id;
     console.log(sess)
     if(config === 'dev') {
+        console.log('running user in dev mode')
         const devSess = await Session.findOne( {where: {sess: sess}});
         if (devSess) {
             const devUser = await User.findOne( {where: {id: devSess.userId}});
             if (devUser) {
                 res.send(devUser);
             }
+        } else {
+            res.status(401).send('no sess for user found');
         }
     } else {
+        console.log('running user in prod mode')
         internetAvailable({
             timeout: 500,
             retries: 5
@@ -39,6 +43,7 @@ exports.findOne = async (req, res) => {
                 },
                 async function(err,httpResponse,body){
                     dataJson = JSON.parse(body);
+                    console.log(dataJson);
                     console.log(cookieJar);
                     //TODO what when sess request fails and retruns:
                     // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
@@ -56,7 +61,7 @@ exports.findOne = async (req, res) => {
             if (dbUser) {
                 res.send(dbUser);
             } else {
-                res.status(500).send({
+                res.status(401).send({
                     message: "Some error occurred while retrieving users."
                 });
             }
@@ -83,11 +88,17 @@ exports.findAll = (req, res) => {
 
 handleResponse = async function (data, sess) {
     let user = await User.findOne({where: {nickname: data.nickname}});
-    if(user == null) {
+    if (user === null) {
             //TODO export information per lanparty
             //TODO implement seat -> in db table platz_nr
-            user = await User.create( { nickname: data.nickname, lanportUserId: data.id, registered: data.party.angemeldet,
-                payed: data.party.bezahlt, seat: null, level: data.level} );
+            user = await User.create( {
+                nickname: data.nickname,
+                lanportUserId: data.id,
+                registered: data.party !== null ? data.party.angemeldet : false,
+                payed: data.party !== null ? data.party.bezahlt : false,
+                seat: null,
+                level: data.level
+            } );
         const session = await Session.create({ sess: sess, userId: user.id});
 
         return user;
@@ -99,8 +110,8 @@ handleResponse = async function (data, sess) {
         //TODO creat a way to remove expired sessions
         //TODO creat seatings for lanparty
         user.nickname = data.nickname;
-        user.registered = data.party ? data.party.angemeldet : false;
-        user.payed = data.party ? data.party.bezahlt : false;
+        user.registered = data.party !== null ? data.party.angemeldet : false;
+        user.payed = data.party !== null ? data.party.bezahlt : false;
         user.seat = '';
         user.level = data.level;
 
