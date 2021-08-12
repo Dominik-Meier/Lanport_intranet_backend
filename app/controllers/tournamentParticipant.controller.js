@@ -1,61 +1,27 @@
 const db = require("../models");
+const {createEventMsg} = require("../util/HelperFunctions");
+const {createTournamentParticipant} = require("../ControllerDelegates/tournamentParticipantDelegate");
+const {findAllTournamentParticipantsByTournament} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {sendMsg} = require("../../app");
 const TournamentParticipant = db.tournamentParticipant;
 const User = db.user;
 const Tournament = db.tournament;
 
-
-exports.findAll = (req, res) => {
-    TournamentParticipant.findAll()
-        .then(data => {
-            res.send(data);
+exports.findByTournament = async (req, res) => {
+    findAllTournamentParticipantsByTournament(req.params.id)
+        .then(dbTournamentParticipant => {
+            res.status(200).send(dbTournamentParticipant)
         })
         .catch(err => { res.status(500).send('Server Error') });
 };
 
-exports.findByTournament = async (req, res) => {
-    const tournamentId = req.params.id;
-    console.log('log tournamentIdv: ', tournamentId);
-    const dbTournamentParticipant = await TournamentParticipant.findAll( { where: {tournamentId: tournamentId}, include: [User]});
-    console.log(dbTournamentParticipant);
-    res.status(200).send(dbTournamentParticipant);
-};
-
-exports.findByUser = (req, res) => {
-};
-
-
 exports.create = async (req, res) => {
-    const tournamentParticipant = req.body;
-    if (tournamentParticipant) {
-        //TODO implement restrictions for adding to team
-        // 1. same team 2. in other team 3. fun main tournament miss matiching
-        const dbTournamentParticipant = await TournamentParticipant.findOne( {where: { tournamentId: tournamentParticipant.tournamentId, userId: tournamentParticipant.user.id}, include: [Tournament]});
-        const dbTournamentParticipants = await TournamentParticipant.findAll( { where: {tournamentId: tournamentParticipant.tournamentId}, include: [User]});
-        const tournament = await Tournament.findOne({ where: {id: tournamentParticipant.tournamentId}});
-
-        if (dbTournamentParticipant) {
-            res.status(403).send('User already exits in this tournament');
-        } else if (tournament.numberOfParticipants <= dbTournamentParticipants.length) {
-            res.status(403).send('Limit of registration reached');
-        } else {
-            const newTournamentParticipant = {
-                tournamentId: tournamentParticipant.tournamentId,
-                userId: tournamentParticipant.user.id
-            }
-            let resTournamentParticipant = await TournamentParticipant.create(newTournamentParticipant);
-            resTournamentParticipant = await TournamentParticipant.findOne( {where: {id: resTournamentParticipant.id}, include: [User]});
-            res.status(200).send(resTournamentParticipant);
-            const event = {
-                event: 'TournamentParticipantJoinedEvent',
-                data: JSON.stringify(resTournamentParticipant)
-            }
-            sendMsg(event);
-        }
-
-    }
-
-    res.status(500).send();
+    createTournamentParticipant(req.body)
+        .then( tournamentParticipant => {
+            res.status(200).send(tournamentParticipant);
+            sendMsg(createEventMsg('TournamentParticipantJoinedEvent', tournamentParticipant))
+        })
+        .catch(err => { res.status(403).send(err) });
 };
 
 
