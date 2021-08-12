@@ -1,10 +1,10 @@
-// https://bezkoder.com/node-js-express-sequelize-mysql/
+// add timestamps in front of log messages
+require('console-stamp')(console, 'yyyy-mm-dd-HH:MM:ss.l');
 
 // Load start args and export it for db config!
 const config = process.argv[2];
 const dbName = process.argv[3];
 const basePath = __dirname;
-
 
 module.exports = {
     config: config,
@@ -28,21 +28,13 @@ const wss = new WebSocket.Server({port: 3001});
 
 wss.on('connection', ws => {
     console.log('Client connected');
-
-    ws.on('message', msg => {
-        console.log(msg.toString());
-        wss.clients.forEach( client =>
-            client.send(msg.toString()));
-    })
-
     ws.on('close', () =>{
         console.log("Client disconnected");
     })
 })
 
 function sendMsg(msg) {
-    console.log('sending msg from new func');
-    console.log(msg);
+    console.log('sending new message: ', msg.toString());
     wss.clients.forEach( client => client.send(JSON.stringify(msg)));
 }
 
@@ -52,7 +44,6 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb'}));
 
 // Load models and setup DB, DB is set up auto when tables are not existing!
-// process.argv[2] is taking the config argument and passing it to the db setup
 const db = require("./app/models");
 db.sequelize.sync();
 

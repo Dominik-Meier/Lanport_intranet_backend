@@ -1,46 +1,36 @@
 const db = require("../models");
+const {deleteGameMode} = require("../ControllerDelegates/gamemodeDelegate");
+const {updateOrCreateGameMode} = require("../ControllerDelegates/gamemodeDelegate");
+const {getAllGameModes} = require("../ControllerDelegates/gamemodeDelegate");
 const Gamemode = db.gamemode;
 const Op = db.Sequelize.Op;
 
 
 // Retrieve all Gamemode from the database.
 exports.findAll = (req, res) => {
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-
-    Gamemode.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    getAllGameModes()
+        .then( allGameModes => {
+            if (allGameModes) {
+                res.send(allGameModes);
+            } else {
+                res.status(404).send('No GameModes Found');
+            }
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Gamemode."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 // Update a Gamemode by the id in the request
 exports.update = (req, res) => {
+    updateOrCreateGameMode(req.body)
+        .then( () => { res.status(200).send(); })
+        .catch(err => { res.status(500).send('Server Error') });
+};
 
-    for (let gameMode of req.body) {
-        if(gameMode.id !== null) {
-            console.log('update gameMode')
-            Gamemode.update(gameMode, { where: {id: gameMode.id}});
-        } else if (gameMode.id === null) {
-            console.log('create new gameMode')
-            const newGameMode = {
-                name: gameMode.name,
-                game:  gameMode.game,
-                elimination: gameMode.elimination,
-                teamSize: gameMode.teamSize,
-                rules: gameMode.rules,
-            };
-            Gamemode.create(newGameMode);
-        }
-    }
-
-    res.status(200).send();
+exports.delete = (req, res) => {
+    const id = req.params.id;
+    deleteGameMode(id)
+        .then(res.status(200).send())
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 

@@ -14,12 +14,7 @@ exports.findAll = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Tournaments."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 // Find a single Tournament with an id
@@ -30,11 +25,7 @@ exports.findOne = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving Tournament with id=" + id
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 // Update a Tournament by the id in the request
@@ -55,11 +46,7 @@ exports.update = (req, res) => {
                 });
             }
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Tournament with id=" + id
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 // Update a Tournament by the id in the request
@@ -113,10 +100,5 @@ exports.findAllPublished = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Tournaments."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };

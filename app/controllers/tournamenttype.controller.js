@@ -11,12 +11,7 @@ exports.findAll = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving TournamentType."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 // Update a TournamentType by the id in the request

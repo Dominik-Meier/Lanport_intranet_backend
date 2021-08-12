@@ -6,11 +6,11 @@
 
 
 <h2>app.js Options</h2>
-first arg mode and second is dbNam
+first arg mode and second is dbNam redirect output to log file
 
 - node app.js dev dev
 - node app.js dev test
-- node app.js prod prod
+- node app.js prod prod > node.log
 
 
 <h2>TODOs</h2>

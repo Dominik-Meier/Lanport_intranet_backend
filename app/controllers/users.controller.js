@@ -47,7 +47,7 @@ exports.findOne = async (req, res) => {
                     console.log(cookieJar);
                     //TODO what when sess request fails and retruns:
                     // {"error":true,"error_text":"unbekanntes SESS-Cookie"}
-                    const resUser = await handleResponse(dataJson, sess).then( resUser => {
+                    await handleResponse(dataJson, sess).then( resUser => {
                         console.log(resUser);
                         res.send(resUser);
                     });
@@ -78,12 +78,7 @@ exports.findAll = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving users."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 handleResponse = async function (data, sess) {

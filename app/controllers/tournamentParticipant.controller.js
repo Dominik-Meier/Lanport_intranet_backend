@@ -10,12 +10,7 @@ exports.findAll = (req, res) => {
         .then(data => {
             res.send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Teams."
-            });
-        });
+        .catch(err => { res.status(500).send('Server Error') });
 };
 
 exports.findByTournament = async (req, res) => {

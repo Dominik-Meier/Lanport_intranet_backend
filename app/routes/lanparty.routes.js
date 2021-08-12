@@ -3,11 +3,9 @@ module.exports = app => {
 
     var router = require("express").Router();
 
-    // Retrieve all Lanparty
     router.get("/", lanparties.findAll);
-
-    // Update a Lanparty with id
     router.put("/", lanparties.update);
+    router.put("/:id", lanparties.delete);
 
     app.use('/api/lanparties', router);
 };
