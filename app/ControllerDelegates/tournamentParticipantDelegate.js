@@ -10,7 +10,8 @@ const TournamentParticipant = db.tournamentParticipant;
 
 module.exports = {
     findAllTournamentParticipantsByTournament: findAllTournamentParticipantsByTournament,
-    createTournamentParticipant: createTournamentParticipant
+    createTournamentParticipant: createTournamentParticipant,
+    deleteTournamentParticipant: deleteTournamentParticipant
 }
 
 function findAllTournamentParticipantsByTournament(tournamentId) {
@@ -37,5 +38,11 @@ async function createTournamentParticipant(tournamentParticipant) {
             return resTournamentParticipant;
         }
     }
+}
+
+async function deleteTournamentParticipant(id) {
+    const tp = await TournamentParticipant.findOne({where: {id: id}, include: [User]});
+    await TournamentParticipant.destroy({where: {id: id}});
+    return tp;
 }
 

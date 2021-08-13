@@ -16,6 +16,7 @@
     "internet-available": "^1.0.0",
     "mysql2": "^2.1.0",
     "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.6.5",
     "sqlite3": "^5.0.2",
     "ws": "^8.0.0"

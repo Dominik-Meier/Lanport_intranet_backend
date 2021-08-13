@@ -9,12 +9,8 @@ module.exports = {
 
 async function getAllLanparties() {
     return await Lanparty.findAll()
-        .then(data => {
-            return data
-        })
-        .catch(err => {
-            console.log('123213')
-        });
+        .then(data => { return data })
+        .catch(err => { res.status(500).send('Server Error') });
 }
 
 async function updateOrCreateLanparty(lanparties) {
