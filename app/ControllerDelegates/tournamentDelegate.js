@@ -16,7 +16,7 @@ function getAllTournaments() {
     return Tournament.findAll({ include: [TournamentType, Lanparty, Gamemode]});
 }
 
-function updateAllTournaments(tournaments) {
+async function updateAllTournaments(tournaments) {
     for (let tournament of tournaments) {
         if (tournament.id !== null) {
             console.log('update tournament');
@@ -34,7 +34,7 @@ function updateAllTournaments(tournaments) {
                 startDate: tournament.startDate,
                 finished: tournament.finished,
             };
-            Tournament.update(DBTournament, { where: {id: tournament.id}});
+            await Tournament.update(DBTournament, { where: {id: tournament.id}});
         } else {
             console.log('create new tournament');
             const newTournament = {
@@ -50,7 +50,7 @@ function updateAllTournaments(tournaments) {
                 startDate: tournament.startDate,
                 finished: tournament.finished,
             };
-            Tournament.create(newTournament);
+            await Tournament.create(newTournament);
         }
     }
 }

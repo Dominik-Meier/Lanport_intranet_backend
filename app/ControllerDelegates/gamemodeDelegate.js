@@ -15,20 +15,22 @@ async function getAllGameModes() {
         .catch(err => null);
 }
 
-async function updateOrCreateGameMode(gameMode) {
-    if (gameMode.id !== null) {
-        console.log('update gameMode with id: ', id);
-        await Gamemode.update(gameMode, { where: {id: gameMode.id}});
-    } else {
-        console.log('create new gameMode')
-        const newGameMode = {
-            name: gameMode.name,
-            game:  gameMode.game,
-            elimination: gameMode.elimination,
-            teamSize: gameMode.teamSize,
-            rules: gameMode.rules,
-        };
-        await Gamemode.create(newGameMode);
+async function updateOrCreateGameMode(gameModes) {
+    for (const gameMode of gameModes) {
+        if (gameMode.id !== null) {
+            console.log('update gameMode with id: ', id);
+            await Gamemode.update(gameMode, { where: {id: gameMode.id}});
+        } else {
+            console.log('create new gameMode')
+            const newGameMode = {
+                name: gameMode.name,
+                game:  gameMode.game,
+                elimination: gameMode.elimination,
+                teamSize: gameMode.teamSize,
+                rules: gameMode.rules,
+            };
+            await Gamemode.create(newGameMode);
+        }
     }
 }
 
