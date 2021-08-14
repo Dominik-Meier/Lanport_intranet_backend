@@ -10,6 +10,7 @@ exports.findAll = (req, res) => {
 };
 
 exports.updateAll = (req, res) => {
+    console.log(req.body);
     updateAllTournaments(req.body)
         .then( () => {
             res.status(200).send();
