@@ -1,18 +1,27 @@
-const {readConfigFromFile} = require("../ControllerDelegates/angularAppConfigDelegate");
-const {writeConfigFile} = require("../ControllerDelegates/angularAppConfigDelegate");
+const {catchSend500AndLogError} = require("../util/HelperFunctions");
+const {readAppConfigFromDB} = require("../ControllerDelegates/angularAppConfigDelegate");
+const {createEventMsg} = require("../util/HelperFunctions");
+const {sendMsg} = require("../../app");
+const {writeAppConfigToDB} = require("../ControllerDelegates/angularAppConfigDelegate");
 
-// Create and Save a new angularAppConfig
 exports.create = (req, res) => {
-    if (!req.body) {
-        res.status(400).send('Body can not be empty!');
-    } else {
-        writeConfigFile(req.body);
-        res.status(201).send(readConfigFromFile());
-    }
+    writeAppConfigToDB(req.body.data)
+        .then(() => {
+            readAppConfigFromDB().then( allAppRegisterComponents => {
+                console.log(allAppRegisterComponents[0].appComponents);
+                res.status(200).send(allAppRegisterComponents);
+            })
+            .catch((err) => { catchSend500AndLogError(err, res); });
+        })
+        .catch((err) => { catchSend500AndLogError(err, res); });
 };
 
-// Find a single angularAppConfig
 exports.find = (req, res) => {
-    res.status(200).send(readConfigFromFile());
+    readAppConfigFromDB()
+        .then( allAppRegisterComponents => {
+            console.log(allAppRegisterComponents);
+            res.status(200).send(allAppRegisterComponents);
+        })
+        .catch((err) => { catchSend500AndLogError(err, res); });
 };
 
