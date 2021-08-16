@@ -1,15 +1,36 @@
 const fs = require('fs');
+const db = require("../models");
+const {findAllAppRegisterComponent} = require("../repo/AppComponentsRepo");
+const {updateAppComponent} = require("../repo/AppComponentsRepo");
+const {createAppComponent} = require("../repo/AppComponentsRepo");
+const {updateAppRegisterComponent} = require("../repo/AppComponentsRepo");
+const {createAppRegisterComponent} = require("../repo/AppComponentsRepo");
 
 module.exports = {
-    readConfigFromFile: readConfigFromFile,
-    writeConfigFile: writeConfigFile
+    writeAppConfigToDB: writeAppConfigToDB,
+    readAppConfigFromDB: readAppConfigFromDB
 }
 
-function readConfigFromFile() {
-    return JSON.parse(fs.readFileSync('angularAppConfig.json', 'utf-8').toString());
+async function readAppConfigFromDB() {
+    return await findAllAppRegisterComponent();
 }
 
-function writeConfigFile(dataToWrite) {
-    return fs.writeFileSync('angularAppConfig.json', JSON.stringify(dataToWrite));
+async function writeAppConfigToDB(config) {
+    for (let appRegisterComponent of config) {
+        if (appRegisterComponent.id) {
+            await updateAppRegisterComponent(appRegisterComponent);
+        } else {
+            appRegisterComponent = await createAppRegisterComponent(appRegisterComponent);
+        }
+        if (appRegisterComponent.appComponents instanceof Array) {
+            for (let appComponent of appRegisterComponent.appComponents) {
+                if (appComponent.id) {
+                    await updateAppComponent(appComponent, appRegisterComponent.id);
+                } else {
+                    await createAppComponent(appComponent, appRegisterComponent.id);
+                }
+            }
+        }
+    }
 }
 
