@@ -14,9 +14,10 @@ async function getAllLanparties() {
 }
 
 async function updateOrCreateLanparty(lanparties) {
-    for (let lanparty of lanparties) {
+    for (const lanparty of lanparties) {
+        console.log('id: ', lanparty.id);
         if(lanparty.id !== null) {
-            console.log('update new party with id: ', id)
+            console.log('update new party with id: ', lanparty.id)
             await Lanparty.update(lanparty, { where: {id: lanparty.id}});
         } else {
             console.log('create new party')

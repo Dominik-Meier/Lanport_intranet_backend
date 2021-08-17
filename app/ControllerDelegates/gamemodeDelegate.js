@@ -18,7 +18,7 @@ async function getAllGameModes() {
 async function updateOrCreateGameMode(gameModes) {
     for (const gameMode of gameModes) {
         if (gameMode.id !== null) {
-            console.log('update gameMode with id: ', id);
+            console.log('update gameMode with id: ', gameMode.id);
             await Gamemode.update(gameMode, { where: {id: gameMode.id}});
         } else {
             console.log('create new gameMode')

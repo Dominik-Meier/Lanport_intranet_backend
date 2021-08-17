@@ -1,5 +1,7 @@
 const fs = require('fs');
 const db = require("../models");
+const {removeAppRegisterComponent} = require("../repo/AppComponentsRepo");
+const {removeAppComponent} = require("../repo/AppComponentsRepo");
 const {findAllAppRegisterComponent} = require("../repo/AppComponentsRepo");
 const {updateAppComponent} = require("../repo/AppComponentsRepo");
 const {createAppComponent} = require("../repo/AppComponentsRepo");
@@ -8,7 +10,9 @@ const {createAppRegisterComponent} = require("../repo/AppComponentsRepo");
 
 module.exports = {
     writeAppConfigToDB: writeAppConfigToDB,
-    readAppConfigFromDB: readAppConfigFromDB
+    readAppConfigFromDB: readAppConfigFromDB,
+    deleteAppComponentById: deleteAppComponentById,
+    deleteAppRegisterComponentById: deleteAppRegisterComponentById
 }
 
 async function readAppConfigFromDB() {
@@ -32,5 +36,13 @@ async function writeAppConfigToDB(config) {
             }
         }
     }
+}
+
+async function deleteAppComponentById(id) {
+    return await removeAppComponent(id);
+}
+
+async function deleteAppRegisterComponentById(id) {
+    return await removeAppRegisterComponent(id);
 }
 

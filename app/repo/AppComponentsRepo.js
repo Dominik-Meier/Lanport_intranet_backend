@@ -7,7 +7,9 @@ module.exports = {
     updateAppRegisterComponent: updateAppRegisterComponent,
     createAppComponent: createAppComponent,
     updateAppComponent: updateAppComponent,
-    findAllAppRegisterComponent: findAllAppRegisterComponent
+    findAllAppRegisterComponent: findAllAppRegisterComponent,
+    removeAppComponent: removeAppComponent,
+    removeAppRegisterComponent: removeAppRegisterComponent
 }
 
 async function findAllAppRegisterComponent() {
@@ -31,7 +33,7 @@ async function updateAppRegisterComponent(appRegisterComponent) {
         dbAppRegisterComponent.id = appRegisterComponent.id;
         dbAppRegisterComponent.name = appRegisterComponent.name;
         dbAppRegisterComponent.usedComponent = appRegisterComponent.usedComponent;
-        dbAppRegisterComponent.active = appRegisterComponent.active;
+        dbAppRegisterComponent.activeForIntranet = appRegisterComponent.activeForIntranet;
         await dbAppRegisterComponent.save();
     }
 }
@@ -60,4 +62,16 @@ async function updateAppComponent(appComponent, appRegisterComponentId) {
         dbAppComponent.activeForBeamerPresentation = appComponent.activeForBeamerPresentation;
         await dbAppComponent.save();
     }
+}
+
+async function removeAppComponent(id) {
+    const destroyedAppComponent = await AppComponent.findOne({where: {id: id}});
+    await AppComponent.destroy({where: {id: id}});
+    return destroyedAppComponent;
+}
+
+async function removeAppRegisterComponent(id) {
+    const destroyedAppRegisterComponent = await AppRegisterComponent.findOne({where: {id: id}});
+    await AppRegisterComponent.destroy({where: {id: id}});
+    return destroyedAppRegisterComponent;
 }

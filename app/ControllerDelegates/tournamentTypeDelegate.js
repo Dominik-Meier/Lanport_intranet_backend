@@ -21,7 +21,7 @@ async function updateOrCreateAllTournamentTypes(tournamentTypes) {
     for (let tournamentType of tournamentTypes) {
         if(tournamentType.id !== null) {
              await TournamentType.update(tournamentType, { where: {id: tournamentType.id}});
-        } else if (tournamentType.id === null) {
+        } else {
             const newTournamentType = {
                 name: tournamentType.name,
             };
