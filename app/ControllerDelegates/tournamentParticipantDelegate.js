@@ -28,6 +28,8 @@ async function createTournamentParticipant(tournamentParticipant) {
             throw 'User already exits in this tournament';
         } else if (tournament.numberOfParticipants <= dbTournamentParticipants.length) {
             throw 'Limit of registration reached';
+        } else if (tournament.started === true) {
+            throw 'Tournament is not open for registration!';
         } else {
             const newTournamentParticipant = {
                 tournamentId: tournamentParticipant.tournamentId,
@@ -42,7 +44,12 @@ async function createTournamentParticipant(tournamentParticipant) {
 
 async function deleteTournamentParticipant(id) {
     const tp = await TournamentParticipant.findOne({where: {id: id}, include: [User]});
-    await TournamentParticipant.destroy({where: {id: id}});
-    return tp;
+    const tournament = await Tournament.findOne({ where: {id: tp.tournamentId}});
+    if (tournament.started === true) {
+        throw 'Tournament is not open for changes';
+    } else {
+        await TournamentParticipant.destroy({where: {id: id}});
+        return tp;
+    }
 }
 

@@ -37,7 +37,7 @@ async function createTeamMemberWithPin(teamMember, pin) {
             throw 'User already exits in this team';
         } else if (tournament.gamemode.teamSize <= dbTeam.teamMembers.length) {
             throw 'Team maximum size reached';
-        } else if (tournament.published === true) {
+        } else if (tournament.started === true) {
             throw 'Tournament is not open for registration!';
         } else if (dbTeam.pin.toString() !== pin.toString()) {
             throw 'Pin does not match';
@@ -63,7 +63,7 @@ async function deleteTeamMember(id) {
         const team = await Team.findOne( {where: {id: deletedTeamMember.teamId}, include: [TeamMember]});
         const tournament = await Tournament.findOne( {where: {id: team.tournamentId}});
 
-        if (tournament.published === true) {
+        if (tournament.started === true) {
             throw 'Tournament is not open for changes';
         } else {
             await TeamMember.destroy({where: {id: id}});

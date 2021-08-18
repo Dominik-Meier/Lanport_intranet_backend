@@ -1,3 +1,5 @@
+const {catchSend500AndLogError} = require("../util/HelperFunctions");
+const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
 const {updateAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
 const {getAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
 
@@ -6,16 +8,13 @@ exports.findAll = (req, res) => {
         .then( allTournaments => {
             res.send(allTournaments);
         })
-        .catch(err => { res.status(500).send('Server Error') });
+        .catch(err => { catchSend500AndLogError(err, res); });
 };
 
 exports.updateAll = (req, res) => {
-    console.log(req.body);
     updateAllTournaments(req.body)
         .then( () => {
-            res.status(200).send();
+            getAllTournamentsAndSendEvent(res);
         })
-        .catch(err => { res.status(500).send('Server Error') });
-
-    res.status(200).send();
+        .catch(err => { catchSend500AndLogError(err, res); });
 };
