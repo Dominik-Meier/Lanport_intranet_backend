@@ -1,23 +1,20 @@
-const db = require("../models");
+const {catchSend500AndLogError} = require("../util/HelperFunctions");
+const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
 const {updateOrCreateAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
 const {getAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
-const TournamentType = db.tournamentType;
-const Op = db.Sequelize.Op;
 
 exports.findAll = (req, res) => {
     getAllTournamentTypes()
         .then( allTournamentTypes => {
             res.send(allTournamentTypes);
         })
-        .catch(err => { res.status(500).send('Server Error') });
+        .catch(err => { catchSend500AndLogError(err, res); });
 };
 
 exports.update = (req, res) => {
     updateOrCreateAllTournamentTypes(req.body)
-        .then(() => {
-            res.status(200).send();
-        })
-        .catch(err => { res.status(500).send('Server Error') });
+        .then(() => { getAllTournamentsAndSendEvent(res); })
+        .catch(err => { catchSend500AndLogError(err, res); });
 };
 
 
