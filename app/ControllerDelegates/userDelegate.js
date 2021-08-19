@@ -82,7 +82,7 @@ async function handleResponse(data, sess) {
             lanportUserId: data.id,
             registered: data.party !== null ? data.party.angemeldet : false,
             payed: data.party !== null ? data.party.bezahlt : false,
-            seat: null,
+            seat: data.party.platz_nr !== null ? data.party.platz_nr : '',
             level: data.level
         });
         const session = await Session.create({sess: sess, userId: user.id});
@@ -97,7 +97,7 @@ async function handleResponse(data, sess) {
         user.nickname = data.nickname;
         user.registered = data.party !== null ? data.party.angemeldet : false;
         user.payed = data.party !== null ? data.party.bezahlt : false;
-        user.seat = '';
+        user.seat = data.party.platz_nr !== null ? data.party.platz_nr : '';
         user.level = data.level;
 
         await user.save();
