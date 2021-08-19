@@ -38,7 +38,7 @@ async function createTeam(team) {
         const tournament = await Tournament.findOne({where: {id: team.tournament.id}, include: [Team]});
         if (tournament.teams.length >= tournament.numberOfParticipants) {
             throw 'Maximum of teams reached for tournament';
-        } else if (tournament.published === true) {
+        } else if (tournament.started === true) {
             throw 'Tournament is not open for changes';
         } else {
             let createdTeam = await Team.create(newTeam);
