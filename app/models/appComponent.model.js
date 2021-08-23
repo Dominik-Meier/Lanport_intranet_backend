@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
         usedComponent: {
             type: Sequelize.STRING
         },
-        appRegisterComponentId: {
+        appComponentId: {
             type: Sequelize.INTEGER
         },
         data: {
@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         activeForBeamerPresentation: {
             type: Sequelize.BOOLEAN
+        },
+        icon: {
+            type: Sequelize.STRING
         }
     }, {
         timestamps: false

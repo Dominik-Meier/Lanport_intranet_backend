@@ -21,18 +21,10 @@ db.session = require("./session.model") (sequelize, Sequelize);
 db.team = require("./team.model") (sequelize, Sequelize);
 db.teamMember = require("./teamMember.model") (sequelize, Sequelize);
 db.tournamentParticipant = require("./tournamentParticipant.model") (sequelize, Sequelize);
-/**
- * Main components
- */
-db.appRegisterComponent = require('./appRegisterComponent.model') (sequelize, Sequelize);
-/**
- * Second Components
- */
 db.appComponent = require('./appComponent.model') (sequelize, Sequelize);
 
 // Associations appComponent
-db.appRegisterComponent.hasMany(db.appComponent);
-db.appComponent.belongsTo(db.appRegisterComponent);
+db.appComponent.hasMany(db.appComponent, {as: 'appComponents'});
 
 // Associations User
 db.user.hasMany(db.seat);
