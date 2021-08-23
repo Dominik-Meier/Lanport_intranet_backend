@@ -1,32 +1,26 @@
-const fs = require('fs');
-const db = require("../models");
-const {removeAppRegisterComponent} = require("../repo/AppComponentsRepo");
 const {removeAppComponent} = require("../repo/AppComponentsRepo");
-const {findAllAppRegisterComponent} = require("../repo/AppComponentsRepo");
+const {findAllAppComponent} = require("../repo/AppComponentsRepo");
 const {updateAppComponent} = require("../repo/AppComponentsRepo");
 const {createAppComponent} = require("../repo/AppComponentsRepo");
-const {updateAppRegisterComponent} = require("../repo/AppComponentsRepo");
-const {createAppRegisterComponent} = require("../repo/AppComponentsRepo");
 
 module.exports = {
     writeAppConfigToDB: writeAppConfigToDB,
     readAppConfigFromDB: readAppConfigFromDB,
     deleteAppComponentById: deleteAppComponentById,
-    deleteAppRegisterComponentById: deleteAppRegisterComponentById
 }
 
 async function readAppConfigFromDB() {
-    return await findAllAppRegisterComponent();
+    return await findAllAppComponent();
 }
 
 async function writeAppConfigToDB(config) {
     for (let appRegisterComponent of config) {
         if (appRegisterComponent.id) {
-            await updateAppRegisterComponent(appRegisterComponent);
+            await updateAppComponent(appRegisterComponent, null);
         } else {
-            appRegisterComponent = await createAppRegisterComponent(appRegisterComponent);
+            appRegisterComponent = await createAppComponent(appRegisterComponent, null);
         }
-        if (appRegisterComponent.appComponents instanceof Array) {
+        if (appRegisterComponent.appComponents && appRegisterComponent.appComponents.length > 0) {
             for (let appComponent of appRegisterComponent.appComponents) {
                 if (appComponent.id) {
                     await updateAppComponent(appComponent, appRegisterComponent.id);
@@ -40,9 +34,5 @@ async function writeAppConfigToDB(config) {
 
 async function deleteAppComponentById(id) {
     return await removeAppComponent(id);
-}
-
-async function deleteAppRegisterComponentById(id) {
-    return await removeAppRegisterComponent(id);
 }
 
