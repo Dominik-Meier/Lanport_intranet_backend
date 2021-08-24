@@ -1,3 +1,4 @@
+const {addAppComponent} = require("../ControllerDelegates/angularAppConfigDelegate");
 const {deleteAppComponentById} = require("../ControllerDelegates/angularAppConfigDelegate");
 const {catchSend500AndLogError} = require("../util/HelperFunctions");
 const {readAppConfigFromDB} = require("../ControllerDelegates/angularAppConfigDelegate");
@@ -27,6 +28,19 @@ exports.find = (req, res) => {
 
 exports.deleteAppComponent = (req, res) => {
     deleteAppComponentById(req.params.id)
+        .then( () => {
+            readAppConfigFromDB()
+                .then( allAppRegisterComponents => {
+                    res.status(204).send();
+                    sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
+                })
+                .catch((err) => { catchSend500AndLogError(err, res); });
+        })
+        .catch((err) => { catchSend500AndLogError(err, res); });
+}
+
+exports.addAppComponent = (req, res) => {
+    addAppComponent(req.body.data)
         .then( () => {
             readAppConfigFromDB()
                 .then( allAppRegisterComponents => {

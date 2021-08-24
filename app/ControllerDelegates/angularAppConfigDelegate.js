@@ -7,6 +7,8 @@ module.exports = {
     writeAppConfigToDB: writeAppConfigToDB,
     readAppConfigFromDB: readAppConfigFromDB,
     deleteAppComponentById: deleteAppComponentById,
+    createAppComponent: createAppComponent,
+    addAppComponent: addAppComponent
 }
 
 async function readAppConfigFromDB() {
@@ -34,5 +36,9 @@ async function writeAppConfigToDB(config) {
 
 async function deleteAppComponentById(id) {
     return await removeAppComponent(id);
+}
+
+async function addAppComponent(newAppComponent) {
+    await createAppComponent(newAppComponent, newAppComponent.appComponentId);
 }
 
