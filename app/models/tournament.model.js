@@ -30,8 +30,17 @@ module.exports = (sequelize, Sequelize) => {
         startDate: {
             type: Sequelize.DATE,
         },
+        endDate: {
+            type: Sequelize.DATE,
+        },
+        registrationEndDate: {
+            type: Sequelize.DATE,
+        },
         finished: {
             type: Sequelize.BOOLEAN,
+        },
+        awards: {
+            type: Sequelize.STRING
         },
     }, {
         timestamps: false
