@@ -6,6 +6,7 @@ module.exports = app => {
     router.get("/", angularAppConfig.find);
     router.post("/", angularAppConfig.create);
     router.delete("/appComponent/:id", angularAppConfig.deleteAppComponent);
+    router.post("/appComponent", angularAppConfig.addAppComponent);
 
     app.use('/api/settings/angularAppConfig', router);
 };
