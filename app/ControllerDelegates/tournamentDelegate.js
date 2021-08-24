@@ -32,7 +32,10 @@ async function updateAllTournaments(tournaments) {
                 published: tournament.published,
                 started: tournament.started,
                 startDate: tournament.startDate,
+                endDate: tournament.endDate,
+                registrationEndDate: tournament.registrationEndDate,
                 finished: tournament.finished,
+                awards: tournament.awards,
             };
             await Tournament.update(DBTournament, { where: {id: tournament.id}});
         } else {
@@ -48,7 +51,9 @@ async function updateAllTournaments(tournaments) {
                 published: tournament.published,
                 started: tournament.started,
                 startDate: tournament.startDate,
-                finished: tournament.finished,
+                endDate: tournament.endDate,
+                registrationEndDate: tournament.registrationEndDate,
+                awards: tournament.awards,
             };
             await Tournament.create(newTournament);
         }
