@@ -1,3 +1,4 @@
+const {createTournament} = require("../ControllerDelegates/tournamentDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
 const {updateAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
@@ -11,6 +12,12 @@ exports.findAll = (req, res) => {
 
 exports.updateAll = (req, res) => {
     updateAllTournaments(req.body)
+        .then( () => { getAllTournamentsAndSendEvent(res); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update Tournaments'); });
+};
+
+exports.addTournament = (req, res) => {
+    createTournament()
         .then( () => { getAllTournamentsAndSendEvent(res); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update Tournaments'); });
 };

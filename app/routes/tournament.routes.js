@@ -4,6 +4,7 @@ module.exports = app => {
     var router = require("express").Router();
 
     router.get("/", tournaments.findAll);
+    router.post("/", tournaments.addTournament);
     router.put("/", tournaments.updateAll);
 
     app.use('/api/tournaments', router);
