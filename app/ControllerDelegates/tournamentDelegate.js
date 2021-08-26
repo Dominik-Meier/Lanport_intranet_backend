@@ -1,11 +1,8 @@
 const db = require("../models");
-const Team = db.team;
 const Tournament = db.tournament;
 const TournamentType = db.tournamentType;
 const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
-const TeamMember = db.teamMember;
-const User = db.user;
 
 module.exports = {
     getAllTournaments: getAllTournaments,

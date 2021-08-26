@@ -8,11 +8,7 @@ module.exports = {
 }
 
 async function getAllGameModes() {
-    return await Gamemode.findAll()
-        .then(data => {
-            return data
-        })
-        .catch(err => null);
+    return Gamemode.findAll();
 }
 
 async function updateOrCreateGameMode(gameModes) {

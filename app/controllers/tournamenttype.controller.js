@@ -1,4 +1,4 @@
-const {catchSend500AndLogError} = require("../util/HelperFunctions");
+const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
 const {updateOrCreateAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
 const {getAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
@@ -8,13 +8,13 @@ exports.findAll = (req, res) => {
         .then( allTournamentTypes => {
             res.send(allTournamentTypes);
         })
-        .catch(err => { catchSend500AndLogError(err, res); });
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get TournamentTypes'); });
 };
 
 exports.update = (req, res) => {
     updateOrCreateAllTournamentTypes(req.body)
         .then(() => { getAllTournamentsAndSendEvent(res); })
-        .catch(err => { catchSend500AndLogError(err, res); });
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create / update TournamentTypes'); });
 };
 
 
