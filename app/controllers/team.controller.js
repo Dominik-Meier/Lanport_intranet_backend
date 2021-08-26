@@ -1,3 +1,4 @@
+const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {createTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {createTeam} = require("../ControllerDelegates/teamDelegate");
@@ -7,25 +8,14 @@ const {sendMsg} = require("../../app");
 
 exports.findAll = (req, res) => {
     getAllTeams()
-        .then(allTeams => {
-            if (allTeams) {
-                res.send(allTeams);
-            } else {
-                res.status(404).send('No Teams Found');
-            }})
-        .catch(err => { res.status(500).send('Server Error') });
+        .then(allTeams => { res.send(allTeams); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get teams'); });
 };
 
 exports.findByTournament = async (req, res) => {
     findTeamsByTournament(req.params.id)
-        .then( teams => {
-            if (teams) {
-                res.send(teams);
-            } else {
-                res.status(404).send('No GameModes Found');
-            }
-        })
-        .catch(err => { res.status(500).send('Server Error') });
+        .then( teams => { res.send(teams); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get teams by tournament'); });
 };
 
 exports.create = async (req, res) =>  {
@@ -37,9 +27,7 @@ exports.create = async (req, res) =>  {
                     sendMsg(createEventMsg('TeamCreatedEvent', createdTeam));
                     setTimeout(() => {sendMsg(createEventMsg('TeamMemberJoinedEvent', createdTeamMember))}, 250);
                 })
-                .catch(err => res.status(403).send(err));
+                .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create teamMember for new team'); });
         })
-        .catch(err => res.status(403).send(err));
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create team'); });
 };
-
-

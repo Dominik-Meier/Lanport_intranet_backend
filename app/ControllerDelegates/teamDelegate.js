@@ -15,11 +15,7 @@ module.exports = {
 }
 
 async function getAllTeams() {
-    return await Team.findAll()
-        .then(data => {
-            return data
-        })
-        .catch(err => null);
+    return Team.findAll();
 }
 
 async function findTeamsByTournament(id) {
@@ -46,7 +42,6 @@ async function createTeam(team) {
                 where: {id: createdTeam.id},
                 include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]
             });
-            console.log(createdTeam);
             return createdTeam;
         }
     }

@@ -8,14 +8,11 @@ module.exports = {
 }
 
 async function getAllLanparties() {
-    return await Lanparty.findAll()
-        .then(data => { return data })
-        .catch(err => { res.status(500).send('Server Error') });
+    return Lanparty.findAll();
 }
 
 async function updateOrCreateLanparty(lanparties) {
     for (const lanparty of lanparties) {
-        console.log('id: ', lanparty.id);
         if(lanparty.id !== null) {
             console.log('update new party with id: ', lanparty.id)
             await Lanparty.update(lanparty, { where: {id: lanparty.id}});

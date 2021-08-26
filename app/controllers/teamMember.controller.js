@@ -1,3 +1,4 @@
+const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {deleteTeam} = require("../ControllerDelegates/teamDelegate");
 const {deleteTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {createEventMsg} = require("../util/HelperFunctions");
@@ -10,7 +11,7 @@ exports.create = async (req, res) => {
             res.status(200).send();
             sendMsg(createEventMsg('TeamMemberJoinedEvent', createdTeamMember));
         })
-        .catch(err => res.status(403).send(err));
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create TeamMember'); });
 };
 
 exports.delete = async (req, res) => {
@@ -25,13 +26,13 @@ exports.delete = async (req, res) => {
                         sendMsg(createEventMsg('TeamMemberLeftEvent', deletedTeamMember));
                         setTimeout(() => {sendMsg(createEventMsg('TeamDeletedEvent', teamToDelete))}, 100);
                     })
-                    .catch(err => res.status(403).send(err));
+                    .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete Team with non teamMember'); });
             } else {
                 res.status(200).send();
                 sendMsg(createEventMsg('TeamMemberLeftEvent', deletedTeamMember));
             }
         })
-        .catch(err => res.status(403).send(err));
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete TeamMember'); });
 };
 
 

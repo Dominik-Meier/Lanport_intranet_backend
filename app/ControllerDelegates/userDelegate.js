@@ -1,12 +1,5 @@
 const db = require("../models");
-const Team = db.team;
-const Tournament = db.tournament;
-const TournamentType = db.tournamentType;
-const Lanparty = db.lanparty;
-const Gamemode = db.gamemode;
-const TeamMember = db.teamMember;
 const User = db.user;
-const TournamentParticipant = db.tournamentParticipant;
 const Session = db.session;
 const request = require('request');
 const rp = require('request-promise');
@@ -58,7 +51,7 @@ async function handleRemoteUser(sess, callback) {
     };
     user = await rp(options)
         .then(body => {return handleResponse(JSON.parse(body), sess)})
-        .catch(err => { console.log(err);throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
+        .catch(err =>  { console.log(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }
 
@@ -76,7 +69,6 @@ async function handleResponse(data, sess) {
     let user = await User.findOne({where: {nickname: data.nickname}});
     if (user === null) {
         //TODO export information per lanparty
-        //TODO implement seat -> in db table platz_nr
         user = await User.create({
             nickname: data.nickname,
             lanportUserId: data.id,
@@ -93,7 +85,6 @@ async function handleResponse(data, sess) {
             await Session.create({sess: sess, userId: user.id});
         }
         //TODO creat a way to remove expired sessions
-        //TODO creat seatings for lanparty
         user.nickname = data.nickname;
         user.registered = data.party !== null ? data.party.angemeldet : false;
         user.payed = data.party !== null ? data.party.bezahlt : false;

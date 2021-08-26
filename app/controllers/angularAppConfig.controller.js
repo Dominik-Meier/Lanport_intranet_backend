@@ -1,3 +1,4 @@
+const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {addAppComponent} = require("../ControllerDelegates/angularAppConfigDelegate");
 const {deleteAppComponentById} = require("../ControllerDelegates/angularAppConfigDelegate");
 const {catchSend500AndLogError} = require("../util/HelperFunctions");
@@ -8,14 +9,8 @@ const {writeAppConfigToDB} = require("../ControllerDelegates/angularAppConfigDel
 
 exports.create = (req, res) => {
     writeAppConfigToDB(req.body.data)
-        .then(() => {
-            readAppConfigFromDB().then( allAppRegisterComponents => {
-                res.status(200).send(allAppRegisterComponents);
-                sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
-            })
-            .catch((err) => { catchSend500AndLogError(err, res); });
-        })
-        .catch((err) => { catchSend500AndLogError(err, res); });
+        .then(() => { readAppConfigFromDBAndSendEvent(res); })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on write new app config'); });
 };
 
 exports.find = (req, res) => {
@@ -23,32 +18,26 @@ exports.find = (req, res) => {
         .then( allAppRegisterComponents => {
             res.status(200).send(allAppRegisterComponents);
         })
-        .catch((err) => { catchSend500AndLogError(err, res); });
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on read app config'); });
 };
 
 exports.deleteAppComponent = (req, res) => {
     deleteAppComponentById(req.params.id)
-        .then( () => {
-            readAppConfigFromDB()
-                .then( allAppRegisterComponents => {
-                    res.status(204).send();
-                    sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
-                })
-                .catch((err) => { catchSend500AndLogError(err, res); });
-        })
-        .catch((err) => { catchSend500AndLogError(err, res); });
+        .then( () => { readAppConfigFromDBAndSendEvent(res); })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete app config'); });
 }
 
 exports.addAppComponent = (req, res) => {
     addAppComponent(req.body.data)
-        .then( () => {
-            readAppConfigFromDB()
-                .then( allAppRegisterComponents => {
-                    res.status(204).send();
-                    sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
-                })
-                .catch((err) => { catchSend500AndLogError(err, res); });
-        })
-        .catch((err) => { catchSend500AndLogError(err, res); });
+        .then( () => { readAppConfigFromDBAndSendEvent(res); })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on read add appComponent config'); });
+}
+
+function readAppConfigFromDBAndSendEvent(res) {
+    readAppConfigFromDB.then(allAppRegisterComponents => {
+        res.status(204).send();
+        sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
+    })
+    .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on read app config'); });
 }
 
