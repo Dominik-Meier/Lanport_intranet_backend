@@ -34,10 +34,10 @@ exports.addAppComponent = (req, res) => {
 }
 
 function readAppConfigFromDBAndSendEvent(res) {
-    readAppConfigFromDB.then(allAppRegisterComponents => {
-        res.status(204).send();
-        sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents));
-    })
-    .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on read app config'); });
+    readAppConfigFromDB()
+        .then(allAppRegisterComponents => {
+            res.status(204).send();
+            sendMsg(createEventMsg('AppConfigChangedEvent', allAppRegisterComponents)); })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on read app config'); });
 }
 

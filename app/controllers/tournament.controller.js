@@ -1,3 +1,6 @@
+const {createEventMsg} = require("../util/HelperFunctions");
+const {sendMsg} = require("../../app");
+const {removeTournament} = require("../ControllerDelegates/tournamentDelegate");
 const {createTournament} = require("../ControllerDelegates/tournamentDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
@@ -23,5 +26,10 @@ exports.addTournament = (req, res) => {
 };
 
 exports.deleteTournament = (req, res) => {
-
+    removeTournament(req.params.id)
+        .then( deletedTournament => {
+            console.log(deletedTournament);
+            res.status(204).send();
+            sendMsg(createEventMsg('TournamentDeletedEvent', deletedTournament)); })
+        .catch( err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete tournament')});
 }
