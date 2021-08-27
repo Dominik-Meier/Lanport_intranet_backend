@@ -4,13 +4,16 @@ const TournamentType = db.tournamentType;
 const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
 const Team = db.team;
+const TournamentParticipant = db.tournamentParticipant;
 
 module.exports = {
     findAllTournaments: findAllTournaments,
     findOneTournament: findOneTournament,
     findOneTournamentIncludeTeams: findOneTournamentIncludeTeams,
+    findOneTournamentIncludeAll: findOneTournamentIncludeAll,
     createNewTournament: createNewTournament,
-    updateExistingTournament: updateExistingTournament
+    updateExistingTournament: updateExistingTournament,
+    deleteTournament: deleteTournament
 }
 
 async function findAllTournaments() {
@@ -19,6 +22,10 @@ async function findAllTournaments() {
 
 async function findOneTournament(id) {
     return Tournament.findOne({where:{id: id}, include: [TournamentType, Lanparty, Gamemode]})
+}
+
+async function findOneTournamentIncludeAll(id) {
+    return Tournament.findOne({where:{id: id}, include: [TournamentType, Lanparty, Gamemode, TournamentParticipant, Team]})
 }
 
 async function findOneTournamentIncludeTeams(id) {
@@ -57,7 +64,7 @@ async function updateExistingTournament(tournament) {
 }
 
 async function deleteTournament(id) {
-    const deletedTournament = Tournament.findOne( {where: {id: id}});
+    const deletedTournament = await Tournament.findOne( {where: {id: id}});
     await Tournament.destroy({where: {id: id}});
     return deletedTournament;
 }
