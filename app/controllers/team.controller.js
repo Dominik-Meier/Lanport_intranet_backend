@@ -6,11 +6,6 @@ const {findTeamsByTournament} = require("../ControllerDelegates/teamDelegate.js"
 const {getAllTeams} = require("../ControllerDelegates/teamDelegate.js");
 const {sendMsg} = require("../../app");
 
-exports.findAll = (req, res) => {
-    getAllTeams()
-        .then(allTeams => { res.send(allTeams); })
-        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get teams'); });
-};
 
 exports.findByTournament = async (req, res) => {
     findTeamsByTournament(req.params.id)

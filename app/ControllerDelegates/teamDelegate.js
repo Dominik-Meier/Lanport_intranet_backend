@@ -1,57 +1,33 @@
-const db = require("../models");
-const Team = db.team;
-const Tournament = db.tournament;
-const TournamentType = db.tournamentType;
-const Lanparty = db.lanparty;
-const Gamemode = db.gamemode;
-const TeamMember = db.teamMember;
-const User = db.user;
+const {deleteTeam} = require("../repo/TeamRepo");
+const {findOneTournamentIncludeTeams} = require("../repo/TournamentRepo");
+const {createNewTeam} = require("../repo/TeamRepo");
+const {findAllTeamsByTournament} = require("../repo/TeamRepo");
 
 module.exports = {
-    getAllTeams: getAllTeams,
     findTeamsByTournament: findTeamsByTournament,
     createTeam: createTeam,
-    deleteTeam: deleteTeam
-}
-
-async function getAllTeams() {
-    return Team.findAll();
+    removeTeam: removeTeam
 }
 
 async function findTeamsByTournament(id) {
-    const resTeams = await Team.findAll( {where: {tournamentId: id}, include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]})
-    for (let team of resTeams) {
-        const tm = await TeamMember.findAll( {where: {teamId: team.id}, include: [User]});
-        team.teamMembers = tm;
-        team.setDataValue('teamMembers', tm);
-    }
+    const resTeams = await findAllTeamsByTournament(id);
     return resTeams;
 }
 
 async function createTeam(team) {
     if (team) {
-        const newTeam = {name: team.name, pin: team.pin, tournamentId: team.tournament.id};
-        const tournament = await Tournament.findOne({where: {id: team.tournament.id}, include: [Team]});
+        const tournament = await findOneTournamentIncludeTeams(team.tournament.id);
+        console.log(tournament)
         if (tournament.teams.length >= tournament.numberOfParticipants) {
             throw 'Maximum of teams reached for tournament';
         } else if (tournament.started === true) {
             throw 'Tournament is not open for changes';
         } else {
-            let createdTeam = await Team.create(newTeam);
-            createdTeam = await Team.findOne({
-                where: {id: createdTeam.id},
-                include: [{model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]
-            });
-            return createdTeam;
+            return createNewTeam(team);
         }
     }
 }
 
-async function deleteTeam(id) {
-    const teamToDelete = await Team.findOne({
-        where: {id: id},
-        include: [{model: TeamMember, include: [User]}, {model: Tournament, include: [TournamentType, Lanparty, Gamemode]}]
-    });
-    await Team.destroy({ where: {id: id}});
-    return teamToDelete;
+async function removeTeam(id) {
+    return deleteTeam(id);
 }

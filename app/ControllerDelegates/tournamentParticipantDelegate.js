@@ -1,23 +1,24 @@
-const db = require("../models");
-const Tournament = db.tournament;
-const User = db.user;
-const TournamentParticipant = db.tournamentParticipant;
+const {deleteTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
+const {createNewTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
+const {findOneTournament} = require("../repo/TournamentRepo");
+const {findAllTournamentParticipantsByTournament} = require("../repo/TournamentParticipantsRepo");
+const {findOneTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
 
 module.exports = {
-    findAllTournamentParticipantsByTournament: findAllTournamentParticipantsByTournament,
+    getAllTournamentParticipantsByTournament: getAllTournamentParticipantsByTournament,
     createTournamentParticipant: createTournamentParticipant,
-    deleteTournamentParticipant: deleteTournamentParticipant
+    removeTournamentParticipant: removeTournamentParticipant
 }
 
-function findAllTournamentParticipantsByTournament(tournamentId) {
-    return TournamentParticipant.findAll( { where: {tournamentId: tournamentId}, include: [User]});
+function getAllTournamentParticipantsByTournament(tournamentId) {
+    return findAllTournamentParticipantsByTournament(tournamentId);
 }
 
 async function createTournamentParticipant(tournamentParticipant) {
     if (tournamentParticipant) {
-        const dbTournamentParticipant = await TournamentParticipant.findOne( {where: { tournamentId: tournamentParticipant.tournamentId, userId: tournamentParticipant.user.id}, include: [Tournament]});
-        const dbTournamentParticipants = await TournamentParticipant.findAll( { where: {tournamentId: tournamentParticipant.tournamentId}, include: [User]});
-        const tournament = await Tournament.findOne({ where: {id: tournamentParticipant.tournamentId}});
+        const dbTournamentParticipant = await findOneTournamentParticipant(tournamentParticipant.id);
+        const dbTournamentParticipants = await findAllTournamentParticipantsByTournament(tournamentParticipant.tournamentId);
+        const tournament = await findOneTournament(tournamentParticipant.tournamentId);
 
         if (dbTournamentParticipant) {
             throw 'User already exits in this tournament';
@@ -26,25 +27,18 @@ async function createTournamentParticipant(tournamentParticipant) {
         } else if (tournament.started === true) {
             throw 'Tournament is not open for registration!';
         } else {
-            const newTournamentParticipant = {
-                tournamentId: tournamentParticipant.tournamentId,
-                userId: tournamentParticipant.user.id
-            }
-            let resTournamentParticipant = await TournamentParticipant.create(newTournamentParticipant);
-            resTournamentParticipant = await TournamentParticipant.findOne({ where: {id: resTournamentParticipant.id}, include: [User] });
-            return resTournamentParticipant;
+            return await createNewTournamentParticipant(tournamentParticipant);
         }
     }
 }
 
-async function deleteTournamentParticipant(id) {
-    const tp = await TournamentParticipant.findOne({where: {id: id}, include: [User]});
-    const tournament = await Tournament.findOne({ where: {id: tp.tournamentId}});
+async function removeTournamentParticipant(id) {
+    const tp = await findOneTournamentParticipant(id);
+    const tournament = await findOneTournament(tp.tournamentId);
     if (tournament.started === true) {
         throw 'Tournament is not open for changes';
     } else {
-        await TournamentParticipant.destroy({where: {id: id}});
-        return tp;
+        return deleteTournamentParticipant(id);
     }
 }
 

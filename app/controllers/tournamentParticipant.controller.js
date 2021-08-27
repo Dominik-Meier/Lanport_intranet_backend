@@ -1,12 +1,12 @@
+const {removeTournamentParticipant} = require("../ControllerDelegates/tournamentParticipantDelegate");
+const {getAllTournamentParticipantsByTournament} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
-const {deleteTournamentParticipant} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {createTournamentParticipant} = require("../ControllerDelegates/tournamentParticipantDelegate");
-const {findAllTournamentParticipantsByTournament} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {sendMsg} = require("../../app");
 
 exports.findByTournament = async (req, res) => {
-    findAllTournamentParticipantsByTournament(req.params.id)
+    getAllTournamentParticipantsByTournament(req.params.id)
         .then(dbTournamentParticipant => { res.status(200).send(dbTournamentParticipant); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get TournamentParticipants'); });
 };
@@ -21,8 +21,9 @@ exports.create = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    deleteTournamentParticipant(req.params.id)
+    removeTournamentParticipant(req.params.id)
         .then( tournamentParticipant => {
+            console.log(tournamentParticipant);
             res.status(200).send();
             sendMsg(createEventMsg('TournamentParticipantLeftEvent', tournamentParticipant));
         })
