@@ -1,10 +1,7 @@
-const db = require("../models");
+const {findOneTournament} = require("../repo/TournamentRepo");
+const {findAllTournaments} = require("../repo/TournamentRepo");
 const {updateExistingTournament} = require("../repo/TournamentRepo");
 const {createNewTournament} = require("../repo/TournamentRepo");
-const Tournament = db.tournament;
-const TournamentType = db.tournamentType;
-const Lanparty = db.lanparty;
-const Gamemode = db.gamemode;
 
 module.exports = {
     getAllTournaments: getAllTournaments,
@@ -12,8 +9,8 @@ module.exports = {
     createTournament: createTournament
 }
 
-function getAllTournaments() {
-    return Tournament.findAll({ include: [TournamentType, Lanparty, Gamemode]});
+async function getAllTournaments() {
+    return findAllTournaments();
 }
 
 async function updateAllTournaments(tournaments) {
@@ -26,4 +23,11 @@ async function updateAllTournaments(tournaments) {
 
 async function createTournament() {
     await createNewTournament();
+}
+
+async function removeTournament(id) {
+    const tournamentToRemove = await findOneTournament(id);
+/*    const teamMembers = await
+    const teams = await
+    const tournamentParticipants = await*/
 }

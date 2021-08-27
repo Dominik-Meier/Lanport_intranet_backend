@@ -1,6 +1,6 @@
+const {removeTeam} = require("../ControllerDelegates/teamDelegate");
+const {removeTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
-const {deleteTeam} = require("../ControllerDelegates/teamDelegate");
-const {deleteTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {createTeamMemberWithPin} = require("../ControllerDelegates/teamMemberDelegate");
 const {sendMsg} = require("../../app");
@@ -15,12 +15,12 @@ exports.create = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    deleteTeamMember(req.params.id)
+    removeTeamMember(req.params.id)
         .then( data => {
             const deletedTeamMember = data[0]
             const team = data[1]
             if (team.teamMembers.length === 1) {
-                deleteTeam(team.id)
+                removeTeam(team.id)
                     .then( teamToDelete => {
                         res.status(200).send();
                         sendMsg(createEventMsg('TeamMemberLeftEvent', deletedTeamMember));

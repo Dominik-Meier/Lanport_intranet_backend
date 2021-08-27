@@ -21,3 +21,7 @@ exports.addTournament = (req, res) => {
         .then( () => { getAllTournamentsAndSendEvent(res); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update Tournaments'); });
 };
+
+exports.deleteTournament = (req, res) => {
+
+}

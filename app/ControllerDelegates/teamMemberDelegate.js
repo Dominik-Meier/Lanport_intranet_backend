@@ -1,14 +1,18 @@
 const db = require("../models");
+const {findOneTeamById} = require("../repo/TeamRepo");
+const {createNewTeamMember} = require("../repo/TeamMemberRepo");
+const {deleteTeamMember} = require("../repo/TeamMemberRepo");
+const {findOneTeamMemberById} = require("../repo/TeamMemberRepo");
+const {findTeamMemberInAnyTeamByTournament} = require("../repo/TeamMemberRepo");
+const {findOneTournament} = require("../repo/TournamentRepo");
+const {findOneTeamMemberByTeamMember} = require("../repo/TeamMemberRepo");
 const Team = db.team;
-const Tournament = db.tournament;
-const Gamemode = db.gamemode;
 const TeamMember = db.teamMember;
-const User = db.user;
 
 module.exports = {
     createTeamMember: createTeamMember,
     createTeamMemberWithPin: createTeamMemberWithPin,
-    deleteTeamMember: deleteTeamMember
+    removeTeamMember: removeTeamMember
 }
 
 function createTeamMember(team, teamMember) {
@@ -18,19 +22,10 @@ function createTeamMember(team, teamMember) {
 
 async function createTeamMemberWithPin(teamMember, pin) {
     if (teamMember) {
-        const dbTeamMember = await TeamMember.findOne( {where: { teamId: teamMember.teamId, userId: teamMember.user.id}});
-        const dbTeam = await Team.findOne( {where: { id: teamMember.teamId}, include: [TeamMember]});
-        const allTournamentTeams = await Team.findAll( {where: {tournamentId: dbTeam.tournamentId}, include: [TeamMember]});
-        const tournament = await Tournament.findOne( {where: {id: dbTeam.tournamentId}, include: [Gamemode]});
-        let joinedOtherTeam = false;
-
-        for (let tournamentTeam of allTournamentTeams) {
-            tournamentTeam.teamMembers.find( t => {
-                if (t.userId === teamMember.user.id) {
-                    joinedOtherTeam = true;
-                }
-            });
-        }
+        const dbTeamMember = await findOneTeamMemberByTeamMember(teamMember);
+        const dbTeam = await findOneTeamById(teamMember.teamId);
+        const tournament = await findOneTournament(dbTeam.tournamentId);
+        const joinedOtherTeam = await findTeamMemberInAnyTeamByTournament(teamMember, tournament.id)
         if (dbTeamMember) {
             throw 'User already exits in this team';
         } else if (tournament.gamemode.teamSize <= dbTeam.teamMembers.length) {
@@ -42,29 +37,23 @@ async function createTeamMemberWithPin(teamMember, pin) {
         } else if (joinedOtherTeam) {
             throw 'User is in other team for tournament';
         } else {
-            const newTeamMember = {
-                teamId: teamMember.teamId,
-                userId: teamMember.user.id
-            }
-            let resTeamMember = await TeamMember.create(newTeamMember);
-            const createdTeamMember = await TeamMember.findOne({where: {id: resTeamMember.id}, include: [User]});
-            return createdTeamMember;
+            return createNewTeamMember(teamMember);
         }
     } else {
         throw 'TeamMember not found';
     }
 }
 
-async function deleteTeamMember(id) {
+async function removeTeamMember(id) {
     if (id !== null) {
-        const deletedTeamMember = await TeamMember.findOne( {where: {id: id}, include: [User]});
+        let deletedTeamMember = await findOneTeamMemberById(id);
         const team = await Team.findOne( {where: {id: deletedTeamMember.teamId}, include: [TeamMember]});
-        const tournament = await Tournament.findOne( {where: {id: team.tournamentId}});
+        const tournament = await findOneTournament(team.tournamentId);
 
         if (tournament.started === true) {
             throw 'Tournament is not open for changes';
         } else {
-            await TeamMember.destroy({where: {id: id}});
+            deletedTeamMember = await deleteTeamMember(id);
             return [deletedTeamMember, team];
         }
     } else {
