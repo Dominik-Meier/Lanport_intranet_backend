@@ -24,7 +24,6 @@ exports.delete = (req, res) => {
     removeTournamentType(req.params.id)
         .then( deletedTournamentType => {
             res.status(204).send();
-            console.log(deletedTournamentType);
             sendMsg(createEventMsg('TournamentTypeDeletedEvent', deletedTournamentType));
         })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete TournamentTypes'); });

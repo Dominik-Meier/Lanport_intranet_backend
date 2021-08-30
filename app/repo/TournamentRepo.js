@@ -9,6 +9,7 @@ const TournamentParticipant = db.tournamentParticipant;
 module.exports = {
     findAllTournaments: findAllTournaments,
     findAllTournamentsByTournamentType: findAllTournamentsByTournamentType,
+    findAllTournamentsByGameMode: findAllTournamentsByGameMode,
     findOneTournament: findOneTournament,
     findOneTournamentIncludeTeams: findOneTournamentIncludeTeams,
     findOneTournamentIncludeAll: findOneTournamentIncludeAll,
@@ -23,6 +24,10 @@ async function findAllTournaments() {
 
 async function findAllTournamentsByTournamentType(id) {
     return Tournament.findAll( {where: {tournamentTypeId: id}});
+}
+
+async function findAllTournamentsByGameMode(id) {
+    return Tournament.findAll( {where: {gamemodeId: id}});
 }
 
 async function findOneTournament(id) {
