@@ -17,7 +17,6 @@ async function findTeamsByTournament(id) {
 async function createTeam(team) {
     if (team) {
         const tournament = await findOneTournamentIncludeTeams(team.tournament.id);
-        console.log(tournament)
         if (tournament.teams.length >= tournament.numberOfParticipants) {
             throw 'Maximum of teams reached for tournament';
         } else if (tournament.started === true) {

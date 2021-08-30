@@ -1,5 +1,6 @@
 const db = require("../models");
 const Lanparty = db.lanparty;
+const {logger} = require('../../app')
 
 module.exports = {
     updateOrCreateLanparty: updateOrCreateLanparty,
@@ -14,10 +15,10 @@ async function getAllLanparties() {
 async function updateOrCreateLanparty(lanparties) {
     for (const lanparty of lanparties) {
         if(lanparty.id !== null) {
-            console.log('update new party with id: ', lanparty.id)
+            logger.info('update new party with id: ', lanparty.id)
             await Lanparty.update(lanparty, { where: {id: lanparty.id}});
         } else {
-            console.log('create new party')
+            logger.info('create new party')
             const newLanparty = {
                 name: lanparty.name,
                 active:  lanparty.active,

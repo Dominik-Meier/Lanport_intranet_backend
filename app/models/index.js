@@ -3,7 +3,8 @@ const {dbName, basePath} = require('../../app')
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: basePath.concat("/").concat(dbName).concat(".sqlite")
+    storage: basePath.concat("/").concat(dbName).concat(".sqlite"),
+    logging: false
 });
 
 const db = {};

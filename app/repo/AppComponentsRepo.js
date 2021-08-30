@@ -37,7 +37,6 @@ async function updateAppComponent(appRegisterComponent, parentId) {
         dbAppComponent.activeForIntranet = appRegisterComponent.activeForIntranet;
         dbAppComponent.activeForBeamerPresentation = appRegisterComponent.activeForBeamerPresentation;
         dbAppComponent.icon = appRegisterComponent.icon;
-        console.log(dbAppComponent.id, dbAppComponent.name);
         await  dbAppComponent.save();
     }
 }

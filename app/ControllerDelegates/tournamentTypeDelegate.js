@@ -26,7 +26,6 @@ async function updateOrCreateAllTournamentTypes(tournamentTypes) {
 
 async function removeTournamentType(id) {
     const tournaments = await findAllTournamentsByTournamentType(id);
-    console.log(tournaments)
     if (tournaments !== null && tournaments.length > 0) {
         throw 'TournamentType is null or used in tournaments!'
     } else {

@@ -5,6 +5,7 @@ const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
 const Team = db.team;
 const TournamentParticipant = db.tournamentParticipant;
+const {logger} = require('../../app')
 
 module.exports = {
     findAllTournaments: findAllTournaments,
@@ -39,12 +40,11 @@ async function findOneTournamentIncludeAll(id) {
 }
 
 async function findOneTournamentIncludeTeams(id) {
-    console.log(id)
     return Tournament.findOne({where:{id: id}, include: [Team]})
 }
 
 async function createNewTournament() {
-    console.log('create new tournament');
+    logger.info('create new tournament');
     const newTournament = {
         name: 'Placeholoder',
     };
@@ -52,7 +52,7 @@ async function createNewTournament() {
 }
 
 async function updateExistingTournament(tournament) {
-    console.log('update tournament');
+    logger.info('update tournament');
     const DBTournament = {
         id: tournament.id,
         name: tournament.name,
