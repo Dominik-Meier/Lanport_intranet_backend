@@ -28,7 +28,6 @@ async function updateOrCreateGameMode(gameModes) {
 
 async function removeGameMode(id) {
     const tournaments = await findAllTournamentsByGameMode(id);
-    console.log(tournaments)
     if (tournaments !== null && tournaments.length > 0) {
         throw 'GameMode is null or used in tournaments!'
     } else {

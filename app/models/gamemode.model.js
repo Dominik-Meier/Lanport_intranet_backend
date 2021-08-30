@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         rules: {
-            type: Sequelize.STRING,
+            type: Sequelize.TEXT,
         }
     }, {
         timestamps: false
