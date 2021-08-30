@@ -33,7 +33,6 @@ function sendStatusCodeAndLogError(res, err, statusCode, msg) {
 function getAllTournamentsAndSendEvent(res) {
     getAllTournaments()
         .then( allTournaments => {
-            console.log(allTournaments)
             res.status(204).send();
             sendMsg(createEventMsg('TournamentsUpdatedEvent', allTournaments));
         })
