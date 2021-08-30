@@ -5,6 +5,7 @@ module.exports = app => {
 
     router.get("/", tournamentTypes.findAll);
     router.put("/", tournamentTypes.update);
+    router.delete("/:id", tournamentTypes.delete);
 
     app.use('/api/tournamentTypes', router);
 };
