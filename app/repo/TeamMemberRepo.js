@@ -3,6 +3,7 @@ const Tournament = db.tournament;
 const User = db.user;
 const TeamMember = db.teamMember;
 const Team = db.team
+const {logger} = require('../../app')
 
 module.exports = {
     findAllTeamMemberByTeam: findAllTeamMemberByTeam,
@@ -35,7 +36,7 @@ async function findTeamMemberInAnyTeamByTournament(teamMember, tournamentId) {
 }
 
 async function createNewTeamMember(teamMember) {
-    console.log('create new teamMember: ', teamMember);
+    logger.info('create new teamMember: ', teamMember);
     const newTeamMember = {
         teamId: teamMember.teamId,
         userId: teamMember.user.id

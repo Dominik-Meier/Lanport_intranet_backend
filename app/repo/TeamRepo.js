@@ -6,6 +6,7 @@ const Lanparty = db.lanparty;
 const Gamemode = db.gamemode;
 const TeamMember = db.teamMember;
 const User = db.user;
+const {logger} = require('../../app')
 
 module.exports = {
     findAllTeamsByTournament: findAllTeamsByTournament,
@@ -30,7 +31,7 @@ async function findOneTeamById(id) {
 }
 
 async function createNewTeam(team) {
-    console.log('create new team: ', team);
+    logger.info('create new team: ', team);
     const newTeam = {name: team.name, pin: team.pin, tournamentId: team.tournament.id};
     let createdTeam = await Team.create(newTeam);
     return findOneTeamById(createdTeam.id);

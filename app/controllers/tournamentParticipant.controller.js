@@ -23,7 +23,6 @@ exports.create = async (req, res) => {
 exports.delete = async (req, res) => {
     removeTournamentParticipant(req.params.id)
         .then( tournamentParticipant => {
-            console.log(tournamentParticipant);
             res.status(200).send();
             sendMsg(createEventMsg('TournamentParticipantLeftEvent', tournamentParticipant));
         })

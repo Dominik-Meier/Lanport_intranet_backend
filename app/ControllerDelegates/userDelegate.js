@@ -4,6 +4,7 @@ const Session = db.session;
 const request = require('request');
 const rp = require('request-promise');
 const internetAvailable = require("internet-available");
+const {logger} = require('../../app')
 
 module.exports = {
     handleGetUserDevMode: handleGetUserDevMode,
@@ -11,7 +12,7 @@ module.exports = {
 }
 
 async function handleGetUserDevMode(sess) {
-    console.log('Get User in dev mode')
+    logger.info('Get User in dev mode')
     const devSess = await Session.findOne( {where: {sess: sess}});
     if (devSess) {
         return User.findOne( {where: {id: devSess.userId}});
@@ -51,7 +52,7 @@ async function handleRemoteUser(sess, callback) {
     };
     user = await rp(options)
         .then(body => {return handleResponse(JSON.parse(body), sess)})
-        .catch(err =>  { console.log(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
+        .catch(err =>  { logger.error(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }
 

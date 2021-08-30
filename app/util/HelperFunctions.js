@@ -1,5 +1,7 @@
 const {sendMsg} = require("../../app");
 const {getAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
+const {logger} = require('../../app')
+
 module.exports = {
     createEventMsg: createEventMsg,
     catchSend500AndLogError: catchSend500AndLogError,
@@ -15,12 +17,12 @@ function createEventMsg(eventType, data) {
 }
 
 function catchSend500AndLogError(err, res) {
-    console.error(err);
+    logger.error(err);
     res.status(500).send('Server Error: '.concat(err));
 }
 
 function sendStatusCodeAndLogError(res, err, statusCode, msg) {
-    console.error(err);
+    logger.error(err);
     res.status(statusCode).send({ 'server_error': err, 'server_message': msg });
 }
 

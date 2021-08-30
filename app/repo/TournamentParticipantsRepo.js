@@ -2,6 +2,7 @@ const db = require("../models");
 const Tournament = db.tournament;
 const User = db.user;
 const TournamentParticipant = db.tournamentParticipant;
+const {logger} = require('../../app')
 
 module.exports = {
     findAllTournamentParticipantsByTournament: findAllTournamentParticipantsByTournament,
@@ -19,7 +20,7 @@ async function findOneTournamentParticipant(id) {
 }
 
 async function createNewTournamentParticipant(tournamentParticipant) {
-    console.log('create new tournamentParticipant');
+    logger.info('create new tournamentParticipant');
     const newTournamentParticipant = {
         tournamentId: tournamentParticipant.tournamentId,
         userId: tournamentParticipant.user.id
