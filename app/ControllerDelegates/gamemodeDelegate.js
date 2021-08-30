@@ -1,40 +1,37 @@
-const db = require("../models");
-const Gamemode = db.gamemode;
+const {findAllTournamentsByGameMode} = require("../repo/TournamentRepo");
+const {deleteGameMode} = require("../repo/GameModeRepo");
+const {createGameMode} = require("../repo/GameModeRepo");
+const {updateGameMode} = require("../repo/GameModeRepo");
+const {findAllGameModes} = require("../repo/GameModeRepo");
 
 module.exports = {
     updateOrCreateGameMode: updateOrCreateGameMode,
     getAllGameModes: getAllGameModes,
-    deleteGameMode: deleteGameMode
+    removeGameMode: removeGameMode
 }
 
 async function getAllGameModes() {
-    return Gamemode.findAll();
+    return findAllGameModes();
 }
 
 async function updateOrCreateGameMode(gameModes) {
     for (const gameMode of gameModes) {
         if (gameMode.id !== null) {
             console.log('update gameMode with id: ', gameMode.id);
-            await Gamemode.update(gameMode, { where: {id: gameMode.id}});
+            await updateGameMode(gameMode);
         } else {
             console.log('create new gameMode')
-            const newGameMode = {
-                name: gameMode.name,
-                game:  gameMode.game,
-                elimination: gameMode.elimination,
-                teamSize: gameMode.teamSize,
-                rules: gameMode.rules,
-            };
-            await Gamemode.create(newGameMode);
+            await createGameMode(gameMode)
         }
     }
 }
 
-async function deleteGameMode(id) {
-    const gameMode = await Gamemode.findOne({where: {id: id}});
-    if (gameMode) {
-        return await Gamemode.destroy(gameMode, {where: {id: gameMode.id}});
+async function removeGameMode(id) {
+    const tournaments = await findAllTournamentsByGameMode(id);
+    console.log(tournaments)
+    if (tournaments !== null && tournaments.length > 0) {
+        throw 'GameMode is null or used in tournaments!'
     } else {
-        return null;
+        return  deleteGameMode(id)
     }
 }

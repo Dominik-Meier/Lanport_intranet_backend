@@ -5,7 +5,7 @@ module.exports = app => {
 
     router.get("/", gamemodes.findAll);
     router.put("/", gamemodes.update);
-    router.put("/:id", gamemodes.delete);
+    router.delete("/:id", gamemodes.delete);
 
     app.use('/api/gamemodes', router);
 };

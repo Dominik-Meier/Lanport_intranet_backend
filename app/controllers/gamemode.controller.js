@@ -1,6 +1,8 @@
+const {removeGameMode} = require("../ControllerDelegates/gamemodeDelegate");
+const {createEventMsg} = require("../util/HelperFunctions");
+const {sendMsg} = require("../../app");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
-const {deleteGameMode} = require("../ControllerDelegates/gamemodeDelegate");
 const {updateOrCreateGameMode} = require("../ControllerDelegates/gamemodeDelegate");
 const {getAllGameModes} = require("../ControllerDelegates/gamemodeDelegate");
 
@@ -18,9 +20,10 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    const id = req.params.id;
-    deleteGameMode(id)
-        .then(() => { getAllTournamentsAndSendEvent(res); })
+    removeGameMode(req.params.id)
+        .then( deletedGameMode => {
+            res.status(204).send();
+            sendMsg(createEventMsg('GameModeDeletedEvent', deletedGameMode)); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete gameMode'); });
 };
 
