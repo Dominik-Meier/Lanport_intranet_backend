@@ -13,6 +13,7 @@ module.exports = {
     sendMsg: sendMsg
 }
 
+// TODO secure API -> deny access if no correct sess is provided
 //App imports
 const express = require('express');
 const bodyParser = require("body-parser");
