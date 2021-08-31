@@ -10,7 +10,8 @@ const jwt = require('jsonwebtoken')
 
 module.exports = {
     handleGetUserDevMode: handleGetUserDevMode,
-    handleGetUserBySess: handleGetUserBySess
+    handleGetUserBySess: handleGetUserBySess,
+    handleRefreshToken: handleRefreshToken
 }
 
 async function handleGetUserDevMode(sess) {
@@ -18,8 +19,7 @@ async function handleGetUserDevMode(sess) {
     const devSess = await Session.findOne( {where: {sess: sess}});
     if (devSess) {
         const user =  await User.findOne( {where: {id: devSess.userId}});
-        user.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
-            process.env.JWT_SECRET, {expiresIn: "2h", issuer: "backend.intranet.lanport.ch"});
+        await createAndSaveJwtTokens(user);
         return user;
     } else {
         throw 'User with sess not found';
@@ -34,8 +34,7 @@ async function handleGetUserBySess(sess) {
         })
             .then( async () => {
                 const remoteUser = await handleRemoteUser(sess);
-                remoteUser.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
-                    process.env.JWT_SECRET, {expiresIn: "2h", issuer: "backend.intranet.lanport.ch"});
+                await createAndSaveJwtTokens(remoteUser);
                 return remoteUser;
             })
             .catch( async (err) => {
@@ -101,4 +100,21 @@ async function handleResponse(data, sess) {
         await user.save();
         return user;
     }
+}
+
+async function createAndSaveJwtTokens(user) {
+    user.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
+        process.env.JWT_SECRET, {expiresIn: "3d", issuer: "backend.intranet.lanport.ch"});
+    user.refreshToken = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level, type: "refresh"},
+        process.env.JWT_SECRET, {expiresIn: "30d", issuer: "backend.intranet.lanport.ch"});
+    user.save();
+}
+
+async function handleRefreshToken(refreshToken) {
+    const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    const user = await User.findOne({where: {id: decodedRefreshToken.user_id}});
+    if (!user) throw 'Access forbidden.';
+    if (user.refreshToken !== refreshToken) throw 'Refresh token not valid!';
+    await createAndSaveJwtTokens(user);
+    return user;
 }
