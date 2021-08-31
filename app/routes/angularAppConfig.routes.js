@@ -1,12 +1,13 @@
 module.exports = app => {
     const angularAppConfig = require("../controllers/angularAppConfig.controller.js");
+    const auth = require("../util/auth")
 
-    var router = require("express").Router();
+    const router = require("express").Router();
 
-    router.get("/", angularAppConfig.find);
-    router.post("/", angularAppConfig.create);
-    router.delete("/appComponent/:id", angularAppConfig.deleteAppComponent);
-    router.post("/appComponent", angularAppConfig.addAppComponent);
+    router.get("/", auth, angularAppConfig.find);
+    router.post("/", auth, angularAppConfig.create);
+    router.delete("/appComponent/:id", auth, angularAppConfig.deleteAppComponent);
+    router.post("/appComponent", auth, angularAppConfig.addAppComponent);
 
     app.use('/api/settings/angularAppConfig', router);
 };

@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         level: {
             type: Sequelize.STRING,
+        },
+        token: {
+            type: Sequelize.STRING,
         }
     }, {
         timestamps: false

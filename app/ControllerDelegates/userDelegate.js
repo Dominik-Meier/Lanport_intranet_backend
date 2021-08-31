@@ -5,6 +5,8 @@ const request = require('request');
 const rp = require('request-promise');
 const internetAvailable = require("internet-available");
 const {logger} = require('../../app')
+const jwt = require('jsonwebtoken')
+
 
 module.exports = {
     handleGetUserDevMode: handleGetUserDevMode,
@@ -15,8 +17,10 @@ async function handleGetUserDevMode(sess) {
     logger.info('Get User in dev mode')
     const devSess = await Session.findOne( {where: {sess: sess}});
     if (devSess) {
-        return User.findOne( {where: {id: devSess.userId}});
-
+        const user =  await User.findOne( {where: {id: devSess.userId}});
+        user.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
+            process.env.JWT_SECRET, {expiresIn: "2h", issuer: "backend.intranet.lanport.ch"});
+        return user;
     } else {
         throw 'User with sess not found';
     }
@@ -30,6 +34,8 @@ async function handleGetUserBySess(sess) {
         })
             .then( async () => {
                 const remoteUser = await handleRemoteUser(sess);
+                remoteUser.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
+                    process.env.JWT_SECRET, {expiresIn: "2h", issuer: "backend.intranet.lanport.ch"});
                 return remoteUser;
             })
             .catch( async (err) => {
