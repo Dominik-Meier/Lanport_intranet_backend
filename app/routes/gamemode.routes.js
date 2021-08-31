@@ -1,11 +1,12 @@
 module.exports = app => {
     const gamemodes = require("../controllers/gamemode.controller.js");
+    const auth = require("../util/auth")
 
-    var router = require("express").Router();
+    const router = require("express").Router();
 
-    router.get("/", gamemodes.findAll);
-    router.put("/", gamemodes.update);
-    router.delete("/:id", gamemodes.delete);
+    router.get("/", auth, gamemodes.findAll);
+    router.put("/", auth, gamemodes.update);
+    router.delete("/:id", auth, gamemodes.delete);
 
     app.use('/api/gamemodes', router);
 };

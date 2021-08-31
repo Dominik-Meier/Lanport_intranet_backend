@@ -1,10 +1,11 @@
 module.exports = app => {
     const teamMembers = require("../controllers/teamMember.controller.js");
+    const auth = require("../util/auth")
 
-    var router = require("express").Router();
+    const router = require("express").Router();
 
-    router.post("/", teamMembers.create);
-    router.delete("/:id", teamMembers.delete);
+    router.post("/", auth, teamMembers.create);
+    router.delete("/:id", auth, teamMembers.delete);
 
     app.use('/api/teamMembers', router);
 };

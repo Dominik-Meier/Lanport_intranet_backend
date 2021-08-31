@@ -1,11 +1,12 @@
 module.exports = app => {
     const tournamentTypes = require("../controllers/tournamenttype.controller.js");
+    const auth = require("../util/auth")
 
-    var router = require("express").Router();
+    const router = require("express").Router();
 
-    router.get("/", tournamentTypes.findAll);
-    router.put("/", tournamentTypes.update);
-    router.delete("/:id", tournamentTypes.delete);
+    router.get("/", auth, tournamentTypes.findAll);
+    router.put("/", auth, tournamentTypes.update);
+    router.delete("/:id", auth, tournamentTypes.delete);
 
     app.use('/api/tournamentTypes', router);
 };

@@ -23,6 +23,7 @@ const winston = require('winston');
 const helmet = require("helmet");
 const WebSocket  = require('ws');
 const db = require("./app/models");
+require('dotenv').config();
 
 //Create express app and port
 const app = express();
