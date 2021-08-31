@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         token: {
             type: Sequelize.STRING,
+        },
+        refreshToken: {
+            type: Sequelize.STRING,
         }
     }, {
         timestamps: false
