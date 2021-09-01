@@ -6,4 +6,6 @@ This is the backend service of the lanport intranet.
 - run 'npm run `mode`'
 - mode -> `dev` or `prod`
 
-<h2>Deployment is done by nginx with reverse proxy</h2>
+<h2>Deployment</h2>
+Is done by nginx with reverse proxy
+See corresponding documentations
