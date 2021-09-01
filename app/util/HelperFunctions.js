@@ -16,14 +16,30 @@ function createEventMsg(eventType, data) {
     }
 }
 
+/**
+ * sends the catched error as 500 status if no other res is send already
+ * @param err which needs to be sent
+ * @param res to send to the client
+ */
 function catchSend500AndLogError(err, res) {
-    logger.error(err);
-    res.status(500).send('Server Error: '.concat(err));
+    if (!res.headersSent) {
+        logger.error(err);
+        res.status(500).send('Server Error: '.concat(err));
+    }
 }
 
+/**
+ * Send the received err and status code to the client if no other res is sent already
+ * @param res to sent to the client
+ * @param err to sent to the client reported by this app
+ * @param statusCode the accordingly status code
+ * @param msg of the error
+ */
 function sendStatusCodeAndLogError(res, err, statusCode, msg) {
-    logger.error(err);
-    res.status(statusCode).send({ 'server_error': err, 'server_message': msg });
+    if (!res.headersSent) {
+        logger.error(err);
+        res.status(statusCode).send({ 'server_error': err, 'server_message': msg });
+    }
 }
 
 /**

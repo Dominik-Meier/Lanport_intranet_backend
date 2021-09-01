@@ -104,7 +104,7 @@ async function handleResponse(data, sess) {
 
 async function createAndSaveJwtTokens(user) {
     user.token = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level},
-        process.env.JWT_SECRET, {expiresIn: "3d", issuer: "backend.intranet.lanport.ch"});
+        process.env.JWT_SECRET, {expiresIn: "5min", issuer: "backend.intranet.lanport.ch"});
     user.refreshToken = jwt.sign({user_id: user.id, nickname: user.nickname, seat: user.seat, level: user.level, type: "refresh"},
         process.env.JWT_SECRET, {expiresIn: "30d", issuer: "backend.intranet.lanport.ch"});
     user.save();
