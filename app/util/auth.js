@@ -10,14 +10,14 @@ const verifyToken = (req, res, next) => {
             if (splitToken[0].toUpperCase() === 'BEARER') {
                 req.user = jwt.verify(splitToken[1].trim(), config.JWT_SECRET);
             } else {
-                throw 'Authentication schema not supported!'
+                res.status(403).send('Authorization Forbidden - Error on token schema is not supported');
             }
         } else {
-            throw 'Authentication fail on validate schema!'
+            res.status(403).send('Authorization Forbidden - Error on decode token schema could no be extracted');
         }
 
     } catch (err) {
-        throw 'Error on JWT decode: '.concat(err);
+        res.status(401).send('Not Authorized - Error on decode token or not valid / expired!');
     }
     return next();
 }
