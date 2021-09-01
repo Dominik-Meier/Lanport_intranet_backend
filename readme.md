@@ -1,17 +1,9 @@
-<h2>Deployment</h2>
+This is the backend service of the lanport intranet.
+
+<h2>Run local</h2>
 - Install node.js 
 - run 'npm install'
-- run 'node app.js [options]'
-- working now!
+- run 'npm run `mode`'
+- mode -> `dev` or `prod`
 
-
-<h2>app.js Options</h2>
-first arg mode and second is dbNam redirect output to log file
-
-- node app.js dev dev
-- node app.js dev test
-- node app.js prod prod > node.log
-
-
-<h2>TODOs</h2>
-- finish user to lanport.ch
+<h2>Deployment is done by nginx with reverse proxy</h2>
