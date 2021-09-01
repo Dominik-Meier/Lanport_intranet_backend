@@ -21,7 +21,8 @@ async function createAppComponent(appRegisterComponent, parentId) {
         data: appRegisterComponent.data,
         activeForIntranet: appRegisterComponent.activeForIntranet,
         activeForBeamerPresentation: appRegisterComponent.activeForBeamerPresentation,
-        icon: appRegisterComponent.icon
+        icon: appRegisterComponent.icon,
+        beamerTimer: appRegisterComponent.beamerTimer
     }
     const dbAppComponent = await AppComponent.create(newAppRegisterComponent);
     return dbAppComponent;
@@ -37,6 +38,7 @@ async function updateAppComponent(appRegisterComponent, parentId) {
         dbAppComponent.activeForIntranet = appRegisterComponent.activeForIntranet;
         dbAppComponent.activeForBeamerPresentation = appRegisterComponent.activeForBeamerPresentation;
         dbAppComponent.icon = appRegisterComponent.icon;
+        dbAppComponent.beamerTimer = appRegisterComponent.beamerTimer;
         await  dbAppComponent.save();
     }
 }

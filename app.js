@@ -15,6 +15,7 @@ module.exports = {
 
 // TODO secure API -> deny access if no correct sess is provided
 // TODO refactoring if important values into env file (e.x. jwt timers)
+// TODO update read me
 //App imports
 const express = require('express');
 const bodyParser = require("body-parser");

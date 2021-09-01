@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         icon: {
             type: Sequelize.STRING
+        },
+        beamerTimer: {
+            type: Sequelize.INTEGER
         }
     }, {
         timestamps: false
