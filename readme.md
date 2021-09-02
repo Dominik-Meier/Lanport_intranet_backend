@@ -1,5 +1,7 @@
 This is the backend service of the lanport intranet.
 
+`Important set first a jwt secret to sign jwts`
+
 <h2>Run local</h2>
 - Install node.js 
 - run 'npm install'
