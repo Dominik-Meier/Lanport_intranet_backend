@@ -9,6 +9,7 @@ const verifyToken = (req, res, next) => {
         if (splitToken.length === 2) {
             if (splitToken[0].toUpperCase() === 'BEARER') {
                 req.user = jwt.verify(splitToken[1].trim(), config.JWT_SECRET);
+                next();
             } else {
                 res.status(403).send('Authorization Forbidden - Error on token schema is not supported');
             }
@@ -19,7 +20,6 @@ const verifyToken = (req, res, next) => {
     } catch (err) {
         res.status(401).send('Not Authorized - Error on decode token or not valid / expired!');
     }
-    return next();
 }
 
 module.exports = verifyToken;
