@@ -1,3 +1,4 @@
+const {getUserIdFromJwt} = require("../util/HelperFunctions");
 const {removeTournamentParticipant} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {getAllTournamentParticipantsByTournament} = require("../ControllerDelegates/tournamentParticipantDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
@@ -12,7 +13,7 @@ exports.findByTournament = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    createTournamentParticipant(req.body)
+    createTournamentParticipant(req.body, getUserIdFromJwt(req.headers["authorization"]))
         .then( tournamentParticipant => {
             res.status(200).send(tournamentParticipant);
             sendMsg(createEventMsg('TournamentParticipantJoinedEvent', tournamentParticipant))
