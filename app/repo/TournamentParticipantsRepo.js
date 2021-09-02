@@ -7,6 +7,7 @@ const {logger} = require('../../app')
 module.exports = {
     findAllTournamentParticipantsByTournament: findAllTournamentParticipantsByTournament,
     findOneTournamentParticipant: findOneTournamentParticipant,
+    findOneTournamentParticipantByUserIdAndTournament: findOneTournamentParticipantByUserIdAndTournament,
     createNewTournamentParticipant: createNewTournamentParticipant,
     deleteTournamentParticipant: deleteTournamentParticipant
 }
@@ -17,6 +18,10 @@ async function findAllTournamentParticipantsByTournament(tournamentId) {
 
 async function findOneTournamentParticipant(id) {
     return TournamentParticipant.findOne( { where: { id: id}, include: [Tournament, User] });
+}
+
+async function findOneTournamentParticipantByUserIdAndTournament(userId, tournamentId) {
+    return TournamentParticipant.findOne({where: {userId: userId, tournamentId: tournamentId}})
 }
 
 async function createNewTournamentParticipant(tournamentParticipant) {
