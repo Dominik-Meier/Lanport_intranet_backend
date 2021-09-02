@@ -13,9 +13,6 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
-// TODO secure API -> deny access if no correct sess is provided
-// TODO refactoring if important values into env file (e.x. jwt timers)
-// TODO update read me
 //App imports
 const express = require('express');
 const bodyParser = require("body-parser");
@@ -29,7 +26,6 @@ require('dotenv').config();
 
 //Create express app and port
 const app = express();
-const port = 3000;
 
 //Secure with helmet
 app.use(helmet.contentSecurityPolicy());
@@ -61,8 +57,8 @@ function sendMsg(msg) {
 
 //Set app parameters and attributes
 app.use(cors());
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb'}));
+app.use(bodyParser.json({limit: process.env.APP_JSON_PARSER_LIMIT}));
+app.use(bodyParser.urlencoded({ extended: true, limit: process.env.APP_URL_ENCODER_LIMIT}));
 
 // Load models and setup DB, DB is set up auto when tables are not existing!
 db.sequelize.sync();
@@ -98,5 +94,5 @@ app.use(morgan('combined', { stream: logger.stream }));
 require('./app/routes/index')(app);
 
 //Start listening for requests
-app.listen(port, () => logger.info(`Example app listening on port ${port}!`));
+app.listen(process.env.APP_PORT, () => logger.info(`Example app listening on port ${process.env.APP_PORT}!`));
 app.get('/', (req, res) => res.send('This is the Rest-API for the Lanport-Intranet, here ist nothing for you as a browser!'));
