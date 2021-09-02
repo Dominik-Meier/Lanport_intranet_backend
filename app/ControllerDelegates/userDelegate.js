@@ -74,7 +74,6 @@ async function handleLocalUser(sess) {
 async function handleResponse(data, sess) {
     let user = await User.findOne({where: {nickname: data.nickname}});
     if (user === null) {
-        //TODO export information per lanparty
         user = await User.create({
             nickname: data.nickname,
             lanportUserId: data.id,
@@ -90,7 +89,6 @@ async function handleResponse(data, sess) {
         if (session === null) {
             await Session.create({sess: sess, userId: user.id});
         }
-        //TODO creat a way to remove expired sessions
         user.nickname = data.nickname;
         user.registered = data.party !== null ? data.party.angemeldet : false;
         user.payed = data.party !== null ? data.party.bezahlt : false;
