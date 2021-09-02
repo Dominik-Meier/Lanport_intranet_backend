@@ -1,3 +1,4 @@
+const {findOneTournamentParticipantByUserIdAndTournament} = require("../repo/TournamentParticipantsRepo");
 const {findOneUserById} = require("../repo/UserRepo");
 const {deleteTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
 const {createNewTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
@@ -18,7 +19,7 @@ function getAllTournamentParticipantsByTournament(tournamentId) {
 async function createTournamentParticipant(tournamentParticipant, userId) {
     if (tournamentParticipant) {
         const user = await findOneUserById(userId);
-        const dbTournamentParticipant = await findOneTournamentParticipant(tournamentParticipant.id);
+        const dbTournamentParticipant = await findOneTournamentParticipantByUserIdAndTournament(userId, tournamentParticipant.tournamentId);
         const dbTournamentParticipants = await findAllTournamentParticipantsByTournament(tournamentParticipant.tournamentId);
         const tournament = await findOneTournament(tournamentParticipant.tournamentId);
 
