@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "node app.js dev dev",
-    "prod": "node aps.js prod prod",
+    "prod": "node app.js prod prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Dominik Meier",
