@@ -13,6 +13,7 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
+//TODO role access of request
 //TODO check if there is a way to delete sess as I do not have an exp date
 //TODO check sync of data -> seats -> are only synced on user login
 //TODO only payed users can register for tournaments

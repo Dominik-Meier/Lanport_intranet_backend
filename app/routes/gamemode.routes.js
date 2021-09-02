@@ -1,3 +1,4 @@
+const {grantAccess} = require("../util/roleBasedAccess");
 module.exports = app => {
     const gamemodes = require("../controllers/gamemode.controller.js");
     const auth = require("../util/auth")
@@ -5,8 +6,8 @@ module.exports = app => {
     const router = require("express").Router();
 
     router.get("/", auth, gamemodes.findAll);
-    router.put("/", auth, gamemodes.update);
-    router.delete("/:id", auth, gamemodes.delete);
+    router.put("/", auth, grantAccess('mitglied'), gamemodes.update);
+    router.delete("/:id", auth, grantAccess('mitglied'), gamemodes.delete);
 
     app.use('/api/gamemodes', router);
 };
