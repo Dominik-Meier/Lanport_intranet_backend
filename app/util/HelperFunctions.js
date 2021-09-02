@@ -39,7 +39,7 @@ function catchSend500AndLogError(err, res) {
  */
 function sendStatusCodeAndLogError(res, err, statusCode, msg) {
     if (!res.headersSent) {
-        logger.error(err);
+        logger.error(res, err, statusCode, msg);
         res.status(statusCode).send({ 'server_error': err, 'server_message': msg });
     }
 }

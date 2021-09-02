@@ -46,7 +46,7 @@ async function findOneTournamentIncludeTeams(id) {
 async function createNewTournament() {
     logger.info('create new tournament');
     const newTournament = {
-        name: 'Placeholoder',
+        name: 'Placeholoder'
     };
     await Tournament.create(newTournament);
 }

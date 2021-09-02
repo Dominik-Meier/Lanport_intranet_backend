@@ -8,7 +8,7 @@ module.exports = app => {
     router.get("/", auth, tournaments.findAll);
     router.post("/", auth, grantAccess('mitglied'), tournaments.addTournament);
     router.put("/", auth, grantAccess('mitglied'), tournaments.updateAll);
-    router.delete("/:id", auth, grantAccess('mitglied'), tournaments.deleteTournament)
+    router.delete("/:id", auth, grantAccess('mitglied'), tournaments.deleteTournament);
 
     app.use('/api/tournaments', router);
 };
