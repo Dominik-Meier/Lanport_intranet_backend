@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const {sendMsg} = require("../../app");
 const {getAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
 const {logger} = require('../../app')
@@ -6,7 +7,8 @@ module.exports = {
     createEventMsg: createEventMsg,
     catchSend500AndLogError: catchSend500AndLogError,
     sendStatusCodeAndLogError: sendStatusCodeAndLogError,
-    getAllTournamentsAndSendEvent: getAllTournamentsAndSendEvent
+    getAllTournamentsAndSendEvent: getAllTournamentsAndSendEvent,
+    getUserIdFromJwt: getUserIdFromJwt
 }
 
 function createEventMsg(eventType, data) {
@@ -55,4 +57,8 @@ function getAllTournamentsAndSendEvent(res) {
             sendMsg(createEventMsg('TournamentsUpdatedEvent', allTournaments));
         })
         .catch(err => { catchSend500AndLogError(err, res); });
+}
+
+function getUserIdFromJwt(jwtToken) {
+    return jwtToken ? jwt.verify(jwtToken.split(" ")[1].trim(), process.env.JWT_SECRET).user_id : null;
 }

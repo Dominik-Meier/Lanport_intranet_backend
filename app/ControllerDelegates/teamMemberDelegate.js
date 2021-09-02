@@ -1,4 +1,5 @@
 const db = require("../models");
+const {findOneUserById} = require("../repo/UserRepo");
 const {findOneTeamById} = require("../repo/TeamRepo");
 const {createNewTeamMember} = require("../repo/TeamMemberRepo");
 const {deleteTeamMember} = require("../repo/TeamMemberRepo");
@@ -15,13 +16,14 @@ module.exports = {
     removeTeamMember: removeTeamMember
 }
 
-function createTeamMember(team, teamMember) {
+function createTeamMember(team, teamMember, userId) {
     teamMember.teamId = team.id;
-    return createTeamMemberWithPin(teamMember, team.pin)
+    return createTeamMemberWithPin(teamMember, team.pin, userId)
 }
 
-async function createTeamMemberWithPin(teamMember, pin) {
+async function createTeamMemberWithPin(teamMember, pin, userId) {
     if (teamMember) {
+        const user = await findOneUserById(userId);
         const dbTeamMember = await findOneTeamMemberByTeamMember(teamMember);
         const dbTeam = await findOneTeamById(teamMember.teamId);
         const tournament = await findOneTournament(dbTeam.tournamentId);
@@ -36,6 +38,8 @@ async function createTeamMemberWithPin(teamMember, pin) {
             throw 'Pin does not match';
         } else if (joinedOtherTeam) {
             throw 'User is in other team for tournament';
+        } else if (!user.payed) {
+            throw 'Only payed user are allowed to register for tournaments';
         } else {
             return createNewTeamMember(teamMember);
         }

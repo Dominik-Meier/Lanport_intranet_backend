@@ -1,3 +1,4 @@
+const {getUserIdFromJwt} = require("../util/HelperFunctions");
 const {removeTeam} = require("../ControllerDelegates/teamDelegate");
 const {removeTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
@@ -6,7 +7,7 @@ const {createTeamMemberWithPin} = require("../ControllerDelegates/teamMemberDele
 const {sendMsg} = require("../../app");
 
 exports.create = async (req, res) => {
-    createTeamMemberWithPin(req.body, req.query.pin)
+    createTeamMemberWithPin(req.body, req.query.pin, getUserIdFromJwt(req.headers["authorization"]))
         .then( createdTeamMember => {
             res.status(200).send();
             sendMsg(createEventMsg('TeamMemberJoinedEvent', createdTeamMember));
