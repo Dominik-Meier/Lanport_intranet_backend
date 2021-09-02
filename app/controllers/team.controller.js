@@ -1,9 +1,9 @@
+const {getUserIdFromJwt} = require("../util/HelperFunctions");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {createTeamMember} = require("../ControllerDelegates/teamMemberDelegate");
 const {createTeam} = require("../ControllerDelegates/teamDelegate");
 const {findTeamsByTournament} = require("../ControllerDelegates/teamDelegate.js");
-const {getAllTeams} = require("../ControllerDelegates/teamDelegate.js");
 const {sendMsg} = require("../../app");
 
 
@@ -14,9 +14,10 @@ exports.findByTournament = async (req, res) => {
 };
 
 exports.create = async (req, res) =>  {
-    createTeam(req.body)
+    const userId = getUserIdFromJwt(req.headers["authorization"]);
+    createTeam(req.body, userId)
         .then( createdTeam => {
-            createTeamMember(createdTeam, req.body.teamMembers[0])
+            createTeamMember(createdTeam, req.body.teamMembers[0], userId)
                 .then( createdTeamMember => {
                     res.status(200).send();
                     sendMsg(createEventMsg('TeamCreatedEvent', createdTeam));

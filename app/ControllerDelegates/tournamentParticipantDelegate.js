@@ -1,3 +1,4 @@
+const {findOneUserById} = require("../repo/UserRepo");
 const {deleteTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
 const {createNewTournamentParticipant} = require("../repo/TournamentParticipantsRepo");
 const {findOneTournament} = require("../repo/TournamentRepo");
@@ -14,8 +15,9 @@ function getAllTournamentParticipantsByTournament(tournamentId) {
     return findAllTournamentParticipantsByTournament(tournamentId);
 }
 
-async function createTournamentParticipant(tournamentParticipant) {
+async function createTournamentParticipant(tournamentParticipant, userId) {
     if (tournamentParticipant) {
+        const user = await findOneUserById(userId);
         const dbTournamentParticipant = await findOneTournamentParticipant(tournamentParticipant.id);
         const dbTournamentParticipants = await findAllTournamentParticipantsByTournament(tournamentParticipant.tournamentId);
         const tournament = await findOneTournament(tournamentParticipant.tournamentId);
@@ -26,6 +28,8 @@ async function createTournamentParticipant(tournamentParticipant) {
             throw 'Limit of registration reached';
         } else if (tournament.started === true) {
             throw 'Tournament is not open for registration!';
+        } else if (!user.payed) {
+            throw 'Only payed user are allowed to register for tournaments';
         } else {
             return await createNewTournamentParticipant(tournamentParticipant);
         }
