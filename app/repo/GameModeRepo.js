@@ -16,13 +16,13 @@ async function updateGameMode(gameMode) {
     GameMode.update(gameMode, { where: {id: gameMode.id}})
 }
 
-async function createGameMode(gameMode) {
+async function createGameMode() {
     const newGameMode = {
-        name: gameMode.name,
-        game: gameMode.game,
-        elimination: gameMode.elimination,
-        teamSize: gameMode.elimination,
-        rules: gameMode.rules
+        name: "GameMode Placeholder",
+        game: "Game Placeholder",
+        elimination: "Placeholder",
+        teamSize: 0,
+        rules: ""
     };
     return GameMode.create(newGameMode);
 }

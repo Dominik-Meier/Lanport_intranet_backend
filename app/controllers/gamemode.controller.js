@@ -1,9 +1,10 @@
+const {updateExistingGameModes} = require("../ControllerDelegates/gamemodeDelegate");
+const {getAllGameModesAndSendEvent} = require("../util/HelperFunctions");
+const {addGameMode} = require("../ControllerDelegates/gamemodeDelegate");
 const {removeGameMode} = require("../ControllerDelegates/gamemodeDelegate");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {sendMsg} = require("../../app");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
-const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
-const {updateOrCreateGameMode} = require("../ControllerDelegates/gamemodeDelegate");
 const {getAllGameModes} = require("../ControllerDelegates/gamemodeDelegate");
 
 
@@ -13,9 +14,15 @@ exports.findAll = (req, res) => {
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get gameModes'); });
 };
 
+exports.create = (req, res) => {
+    addGameMode(req.body)
+        .then( () => { getAllGameModesAndSendEvent(res); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update gameMode'); });
+};
+
 exports.update = (req, res) => {
-    updateOrCreateGameMode(req.body)
-        .then( () => { getAllTournamentsAndSendEvent(res); })
+    updateExistingGameModes(req.body)
+        .then( () => { getAllGameModesAndSendEvent(res); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update gameMode'); });
 };
 

@@ -6,7 +6,8 @@ const {findAllGameModes} = require("../repo/GameModeRepo");
 const {logger} = require('../../app')
 
 module.exports = {
-    updateOrCreateGameMode: updateOrCreateGameMode,
+    updateExistingGameModes: updateExistingGameModes,
+    addGameMode: addGameMode,
     getAllGameModes: getAllGameModes,
     removeGameMode: removeGameMode
 }
@@ -15,15 +16,15 @@ async function getAllGameModes() {
     return findAllGameModes();
 }
 
-async function updateOrCreateGameMode(gameModes) {
+async function addGameMode() {
+    logger.info('create new gameMode')
+    await createGameMode()
+}
+
+async function updateExistingGameModes(gameModes) {
     for (const gameMode of gameModes) {
-        if (gameMode.id !== null) {
-            logger.info('update gameMode with id: ', gameMode.id);
-            await updateGameMode(gameMode);
-        } else {
-            logger.info('create new gameMode')
-            await createGameMode(gameMode)
-        }
+        logger.info('update gameMode with id: ', gameMode.id);
+        await updateGameMode(gameMode);
     }
 }
 

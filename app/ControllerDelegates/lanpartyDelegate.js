@@ -31,7 +31,7 @@ async function updateLanparty(lanparties) {
 async function removeLanparty(id) {
     const tournament =  await findAllTournamentsByLanparty(id);
     if (tournament?.length > 0) {
-        throw 'Lanparty is used in tournaments!'
+        throw 'Lanparty is used in tournaments or null!'
     } else {
        return deleteLanparty(id);
     }
