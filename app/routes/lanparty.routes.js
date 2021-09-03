@@ -6,8 +6,9 @@ module.exports = app => {
     const router = require("express").Router();
 
     router.get("/", auth, lanparties.findAll);
+    router.post("/", auth, grantAccess("mitglied"), lanparties.create)
     router.put("/", auth, grantAccess('mitglied'), lanparties.update);
-    router.put("/:id", auth, grantAccess('mitglied'), lanparties.delete);
+    router.delete("/:id", auth, grantAccess('mitglied'), lanparties.delete);
 
     app.use('/api/lanparties', router);
 };
