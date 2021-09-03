@@ -1,6 +1,10 @@
+const {sendMsg} = require("../../app");
+const {createEventMsg} = require("../util/HelperFunctions");
+const {updateLanparty} = require("../ControllerDelegates/lanpartyDelegate");
+const {createLanparty} = require("../ControllerDelegates/lanpartyDelegate");
+const {getAllLanpartiesAndSendEvent} = require("../util/HelperFunctions");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
-const {deleteLanparty} = require("../ControllerDelegates/lanpartyDelegate");
-const {updateOrCreateLanparty} = require("../ControllerDelegates/lanpartyDelegate");
+const {removeLanparty} = require("../ControllerDelegates/lanpartyDelegate");
 const {getAllLanparties} = require("../ControllerDelegates/lanpartyDelegate");
 
 // TODO implement Events
@@ -10,15 +14,23 @@ exports.findAll = (req, res) => {
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get lanparties'); });
 };
 
+exports.create = (req , res) => {
+    createLanparty()
+        .then( () => getAllLanpartiesAndSendEvent(res) )
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create Lanparty'); })
+}
+
 exports.update = (req, res) => {
-    updateOrCreateLanparty(req.body)
-        .then( () => { res.status(200).send(); })
+    updateLanparty(req.body)
+        .then( () => getAllLanpartiesAndSendEvent(res) )
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update lanparty'); });
 };
 
 exports.delete = (req, res) => {
     const id = req.params.id;
-    deleteLanparty(id)
-        .then(res.status(200).send())
+    removeLanparty(id)
+        .then( deletedLanparty => {
+            res.status(200).send();
+            sendMsg(createEventMsg('LanpartyDeletedEvent', deletedLanparty)); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on delete lanparty'); });
 };

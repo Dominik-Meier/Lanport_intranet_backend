@@ -1,40 +1,38 @@
-const db = require("../models");
-const Lanparty = db.lanparty;
+const {updateExistingLanparty} = require("../repo/LanpartyRepo");
+const {addLanparty} = require("../repo/LanpartyRepo");
+const {findAllLanparties} = require("../repo/LanpartyRepo");
+const {deleteLanparty} = require("../repo/LanpartyRepo");
+const {findAllTournamentsByLanparty} = require("../repo/TournamentRepo");
 const {logger} = require('../../app')
 
 module.exports = {
-    updateOrCreateLanparty: updateOrCreateLanparty,
+    updateLanparty: updateLanparty,
     getAllLanparties: getAllLanparties,
-    deleteLanparty: deleteLanparty
+    createLanparty:createLanparty,
+    removeLanparty: removeLanparty
 }
 
 async function getAllLanparties() {
-    return Lanparty.findAll();
+    return findAllLanparties();
 }
 
-async function updateOrCreateLanparty(lanparties) {
+async function createLanparty() {
+    logger.info('create new party')
+    await addLanparty();
+}
+
+async function updateLanparty(lanparties) {
     for (const lanparty of lanparties) {
-        if(lanparty.id !== null) {
-            logger.info('update new party with id: ', lanparty.id)
-            await Lanparty.update(lanparty, { where: {id: lanparty.id}});
-        } else {
-            logger.info('create new party')
-            const newLanparty = {
-                name: lanparty.name,
-                active:  lanparty.active,
-                startDate: lanparty.startDate,
-                endDate: lanparty.endDate,
-            };
-            await Lanparty.create(newLanparty);
-        }
+        logger.info('update new party with id: ', lanparty.id)
+        await updateExistingLanparty(lanparty);
     }
 }
 
-async function deleteLanparty(id) {
-    const lanparty = await Lanparty.findOne({where: {id: id}});
-    if (lanparty) {
-        return await Lanparty.destroy(lanparty, {where: {id: lanparty.id}});
+async function removeLanparty(id) {
+    const tournament =  await findAllTournamentsByLanparty(id);
+    if (tournament?.length > 0) {
+        throw 'Lanparty is used in tournaments!'
     } else {
-        return null;
+       return deleteLanparty(id);
     }
 }
