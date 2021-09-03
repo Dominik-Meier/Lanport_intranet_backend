@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const {getAllGameModes} = require("../ControllerDelegates/gamemodeDelegate");
 const {getAllLanparties} = require("../ControllerDelegates/lanpartyDelegate");
 const {sendMsg} = require("../../app");
 const {getAllTournaments} = require("../ControllerDelegates/tournamentDelegate");
@@ -10,6 +11,7 @@ module.exports = {
     sendStatusCodeAndLogError: sendStatusCodeAndLogError,
     getAllTournamentsAndSendEvent: getAllTournamentsAndSendEvent,
     getAllLanpartiesAndSendEvent: getAllLanpartiesAndSendEvent,
+    getAllGameModesAndSendEvent: getAllGameModesAndSendEvent,
     getUserIdFromJwt: getUserIdFromJwt
 }
 
@@ -66,6 +68,15 @@ function getAllLanpartiesAndSendEvent(res) {
         .then( allLanparties => {
             res.status(204).send();
             sendMsg(createEventMsg('LanpartiesUpdatedEvent', allLanparties));
+        })
+        .catch(err => { catchSend500AndLogError(err, res); });
+}
+
+function getAllGameModesAndSendEvent(res) {
+    getAllGameModes()
+        .then( allGameModes => {
+            res.status(204).send();
+            sendMsg(createEventMsg('GameModesUpdatedEvent', allGameModes));
         })
         .catch(err => { catchSend500AndLogError(err, res); });
 }
