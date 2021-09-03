@@ -6,6 +6,7 @@ module.exports = app => {
     const router = require("express").Router();
 
     router.get("/", auth, gamemodes.findAll);
+    router.post("/", auth, grantAccess('mitglied'), gamemodes.create);
     router.put("/", auth, grantAccess('mitglied'), gamemodes.update);
     router.delete("/:id", auth, grantAccess('mitglied'), gamemodes.delete);
 
