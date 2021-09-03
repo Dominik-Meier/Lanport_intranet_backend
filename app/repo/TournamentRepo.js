@@ -11,6 +11,7 @@ module.exports = {
     findAllTournaments: findAllTournaments,
     findAllTournamentsByTournamentType: findAllTournamentsByTournamentType,
     findAllTournamentsByGameMode: findAllTournamentsByGameMode,
+    findAllTournamentsByLanparty: findAllTournamentsByLanparty,
     findOneTournament: findOneTournament,
     findOneTournamentIncludeTeams: findOneTournamentIncludeTeams,
     findOneTournamentIncludeAll: findOneTournamentIncludeAll,
@@ -29,6 +30,10 @@ async function findAllTournamentsByTournamentType(id) {
 
 async function findAllTournamentsByGameMode(id) {
     return Tournament.findAll( {where: {gamemodeId: id}});
+}
+
+async function findAllTournamentsByLanparty(id) {
+    return Tournament.findAll( {where: {lanpartyId: id}});
 }
 
 async function findOneTournament(id) {
