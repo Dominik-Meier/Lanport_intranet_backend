@@ -9,5 +9,5 @@ This is the backend service of the lanport intranet.
 - mode -> `dev` or `prod`
 
 <h2>Deployment</h2>
-- See for background process`https://www.dev2qa.com/how-to-run-node-js-server-in-background/ `
-- Is done by nginx with reverse proxy, See corresponding documentations
+- Start process with: `nohup npm run prod &`
+- Use reverse proxy of nginx to serve request
