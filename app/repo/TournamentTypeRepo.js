@@ -4,7 +4,7 @@ const TournamentType = db.tournamentType;
 module.exports = {
     findAllTournamentTypes: findAllTournamentTypes,
     updateTournamentType: updateTournamentType,
-    createTournamentType: createTournamentType,
+    addTournamentType: addTournamentType,
     deleteTournamentType: deleteTournamentType
 }
 
@@ -16,8 +16,8 @@ async function updateTournamentType(tournamentType) {
     TournamentType.update(tournamentType, { where: {id: tournamentType.id}})
 }
 
-async function createTournamentType(tournamentType) {
-    const newTournamentType = { name: tournamentType.name };
+async function addTournamentType() {
+    const newTournamentType = { name: "Placeholder TournamentType" };
     return TournamentType.create(newTournamentType);
 }
 

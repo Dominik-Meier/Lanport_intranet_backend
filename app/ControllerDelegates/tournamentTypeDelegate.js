@@ -1,12 +1,14 @@
+const {addTournamentType} = require("../repo/TournamentTypeRepo");
+const {logger} = require('../../app')
 const {findAllTournamentsByTournamentType} = require("../repo/TournamentRepo");
-const {createTournamentType} = require("../repo/TournamentTypeRepo");
 const {deleteTournamentType} = require("../repo/TournamentTypeRepo");
 const {updateTournamentType} = require("../repo/TournamentTypeRepo");
 const {findAllTournamentTypes} = require("../repo/TournamentTypeRepo");
 
 module.exports = {
     getAllTournamentTypes: getAllTournamentTypes,
-    updateOrCreateAllTournamentTypes: updateOrCreateAllTournamentTypes,
+    createTournamentType: createTournamentType,
+    updateExistingTournamentTypes: updateExistingTournamentTypes,
     removeTournamentType: removeTournamentType
 }
 
@@ -14,13 +16,15 @@ function getAllTournamentTypes() {
     return findAllTournamentTypes();
 }
 
-async function updateOrCreateAllTournamentTypes(tournamentTypes) {
+async function createTournamentType() {
+    logger.info('create new tournamentType');
+    await addTournamentType();
+}
+
+async function updateExistingTournamentTypes(tournamentTypes) {
     for (let tournamentType of tournamentTypes) {
-        if(tournamentType.id !== null) {
-            await updateTournamentType(tournamentType);
-        } else {
-            await createTournamentType(tournamentType);
-        }
+        logger.info('update new tournamentType: '.concat(tournamentType.id));
+        await updateTournamentType(tournamentType);
     }
 }
 
