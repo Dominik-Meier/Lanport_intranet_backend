@@ -9,5 +9,5 @@ This is the backend service of the lanport intranet.
 - mode -> `dev` or `prod`
 
 <h2>Deployment</h2>
-Is done by nginx with reverse proxy
-See corresponding documentations
+- See for background process`https://www.dev2qa.com/how-to-run-node-js-server-in-background/ `
+- Is done by nginx with reverse proxy, See corresponding documentations
