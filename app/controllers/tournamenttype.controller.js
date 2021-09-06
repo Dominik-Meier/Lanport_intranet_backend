@@ -1,23 +1,28 @@
+const {updateExistingTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
+const {createTournamentType} = require("../ControllerDelegates/tournamentTypeDelegate");
+const {getAllTournamentTypeAndSendEvent} = require("../util/HelperFunctions");
 const {createEventMsg} = require("../util/HelperFunctions");
 const {removeTournamentType} = require("../ControllerDelegates/tournamentTypeDelegate");
 const {sendMsg} = require("../../app");
 const {sendStatusCodeAndLogError} = require("../util/HelperFunctions");
-const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
-const {updateOrCreateAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
 const {getAllTournamentTypes} = require("../ControllerDelegates/tournamentTypeDelegate");
 
 exports.findAll = (req, res) => {
     getAllTournamentTypes()
-        .then( allTournamentTypes => {
-            res.send(allTournamentTypes);
-        })
+        .then( allTournamentTypes => { res.send(allTournamentTypes); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on get TournamentTypes'); });
 };
 
+exports.create = (req, res) => {
+    createTournamentType()
+        .then( () => { getAllTournamentTypeAndSendEvent(res); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create TournamentTypes'); });
+}
+
 exports.update = (req, res) => {
-    updateOrCreateAllTournamentTypes(req.body)
-        .then(() => { getAllTournamentsAndSendEvent(res); })
-        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create / update TournamentTypes'); });
+    updateExistingTournamentTypes(req.body)
+        .then(() => { getAllTournamentTypeAndSendEvent(res); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on update TournamentTypes'); });
 };
 
 exports.delete = (req, res) => {
