@@ -14,7 +14,12 @@ module.exports = {
     basePath: basePath,
     sendMsg: sendMsg,
 }
-
+//TODO make team name unique
+//TODO check if registration has ended and deny new regis
+//TODO create enum for elimination types -> as challonge only support a view
+//TODO finish challonge operations predefined at router
+//TODO refactor challonge rest uri to rest like -> id before challonge
+//TODO add boolean for tournament to show bracket or not
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date
 //TODO check sync of data -> seats -> are only synced on user login
@@ -69,7 +74,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: process.env.APP_URL_ENCOD
 db.sequelize.sync();
 
 //adding winston as logger
-logger = new winston.createLogger({
+const logger = new winston.createLogger({
     transports: [
         new winston.transports.File({
             level: 'info',
@@ -83,6 +88,7 @@ logger = new winston.createLogger({
     ],
     exitOnError: false
 });
+winston.add(logger);
 
 module.exports.logger = logger;
 
