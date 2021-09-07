@@ -42,6 +42,9 @@ module.exports = (sequelize, Sequelize) => {
         awards: {
             type: Sequelize.STRING
         },
+        challongeId: {
+            type: Sequelize.INTEGER,
+        }
     }, {
         timestamps: false
     });
