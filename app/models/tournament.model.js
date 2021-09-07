@@ -47,6 +47,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         challongeParticipantsAdded: {
             type: Sequelize.BOOLEAN
+        },
+        challongeTournamentStarted: {
+            type: Sequelize.BOOLEAN
         }
     }, {
         timestamps: false
