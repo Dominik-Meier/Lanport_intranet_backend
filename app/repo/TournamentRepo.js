@@ -58,24 +58,7 @@ async function createNewTournament() {
 
 async function updateExistingTournament(tournament) {
     logger.info('update tournament');
-    const DBTournament = {
-        id: tournament.id,
-        name: tournament.name,
-        description: tournament.description,
-        lanpartyId: tournament.lanparty.id,
-        gamemodeId: tournament.gameMode.id,
-        tournamentTypeId: tournament.tournamentType.id,
-        teamRegistration: tournament.teamRegistration,
-        numberOfParticipants: tournament.numberOfParticipants,
-        published: tournament.published,
-        started: tournament.started,
-        startDate: tournament.startDate,
-        endDate: tournament.endDate,
-        registrationEndDate: tournament.registrationEndDate,
-        finished: tournament.finished,
-        awards: tournament.awards,
-    };
-    await Tournament.update(DBTournament, { where: {id: tournament.id}});
+    await tournament.save();
 }
 
 async function deleteTournament(id) {
