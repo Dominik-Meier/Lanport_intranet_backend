@@ -7,7 +7,9 @@ const {getChallongeTournamentType} = require("../util/HelperFunctions");
 
 module.exports = {
     createChallongeTournament: createChallongeTournament,
-    addChallongeTournamentParticipants: addChallongeTournamentParticipants
+    addChallongeTournamentParticipants: addChallongeTournamentParticipants,
+    clearChallongeTournamentParticipants: clearChallongeTournamentParticipants,
+    startChallongeTournament: startChallongeTournament
 }
 
 async function getAllTournaments() {
@@ -56,8 +58,6 @@ async function addChallongeTournamentParticipants(id) {
     } else {
         if (tournament.challongeParticipantsAdded) {
             await clearChallongeTournamentParticipants(tournament.challongeId);
-            tournament.challongeParticipantsAdded = false;
-            await updateDBTournament(tournament);
         }
 
         const participantNames = [];
@@ -90,9 +90,10 @@ async function addChallongeTournamentParticipants(id) {
 }
 
 async function clearChallongeTournamentParticipants(id) {
+    const tournament = await findOneTournament(id);
     const options = {
         method: 'DELETE',
-        uri: 'https://api.challonge.com/v1/tournaments/'.concat(id.toString()).concat('/participants/clear.json'),
+        uri: 'https://api.challonge.com/v1/tournaments/'.concat(tournament.challongeId.toString()).concat('/participants/clear.json'),
         headers: {'Accept': 'application/json'},
         json: true,
         body: {
@@ -101,8 +102,35 @@ async function clearChallongeTournamentParticipants(id) {
     }
 
     await rp(options)
-        .then( () => {})
+        .then( async () => {
+            tournament.challongeParticipantsAdded = false;
+            await updateDBTournament(tournament);
+        })
         .catch( err => handleError(err));
+}
+
+async function startChallongeTournament(id) {
+    const tournament = await findOneTournament(id);
+    if (tournament.challongeTournamentStarted) {
+        throw 'Tournament started on challonge already'
+    } else {
+        const options = {
+            method: 'POST',
+            uri: 'https://api.challonge.com/v1/tournaments/'.concat(tournament.challongeId.toString()).concat('/start.json'),
+            headers: {'Accept': 'application/json'},
+            json: true,
+            body: {
+                api_key: process.env.CHALLONGE_API_KEY
+            }
+        }
+
+        await rp(options)
+            .then( async () => {
+                tournament.challongeTournamentStarted = true;
+                await updateDBTournament(tournament);
+            })
+            .catch( err => handleError(err));
+    }
 }
 
 async function handleNewCreatedChallongeTournament(res, tournament) {
