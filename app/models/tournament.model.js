@@ -44,6 +44,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         challongeId: {
             type: Sequelize.INTEGER,
+        },
+        challongeParticipantsAdded: {
+            type: Sequelize.BOOLEAN
         }
     }, {
         timestamps: false

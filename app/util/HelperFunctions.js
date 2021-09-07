@@ -14,7 +14,8 @@ module.exports = {
     getAllLanpartiesAndSendEvent: getAllLanpartiesAndSendEvent,
     getAllGameModesAndSendEvent: getAllGameModesAndSendEvent,
     getAllTournamentTypeAndSendEvent: getAllTournamentTypeAndSendEvent,
-    getUserIdFromJwt: getUserIdFromJwt
+    getUserIdFromJwt: getUserIdFromJwt,
+    getChallongeTournamentType: getChallongeTournamentType
 }
 
 function createEventMsg(eventType, data) {
@@ -94,4 +95,18 @@ function getAllTournamentTypeAndSendEvent(res) {
 
 function getUserIdFromJwt(jwtToken) {
     return jwtToken ? jwt.verify(jwtToken.split(" ")[1].trim(), process.env.JWT_SECRET).user_id : null;
+}
+
+function getChallongeTournamentType(challongeTournamentType) {
+    if (challongeTournamentType.toUpperCase() === 'SINGLE ELIMINATION') {
+        return 'single elimination';
+    } else if (challongeTournamentType.toUpperCase() === 'DOUBLE ELIMINATION') {
+        return 'double elimination';
+    } else if (challongeTournamentType.toUpperCase() === 'ROUND ROBIN') {
+        return 'round robin';
+    } else if (challongeTournamentType.toUpperCase() === 'SWISS') {
+        return 'swiss';
+    } else {
+        throw 'Elimination must be one of single elimination / double elimination / round robin / swiss';
+    }
 }
