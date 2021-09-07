@@ -18,6 +18,7 @@ async function findTeamsByTournament(id) {
 async function createTeam(team, userId) {
     if (team) {
         const tournament = await findOneTournamentIncludeTeams(team.tournament.id);
+        const teams = await findAllTeamsByTournament(tournament.id);
         const user = await findOneUserById(userId);
         if (tournament.teams.length >= tournament.numberOfParticipants) {
             throw 'Maximum of teams reached for tournament';
@@ -25,6 +26,8 @@ async function createTeam(team, userId) {
             throw 'Tournament is not open for changes';
         } else if (!user.payed) {
             throw 'Only payed user are allowed to register for tournaments';
+        } else if (teams.find( x => x.name === team.name)) {
+            throw 'Team name must be unique!'
         } else {
             return createNewTeam(team);
         }
