@@ -1,3 +1,4 @@
+const {updateChallongeTournament} = require("../ControllerDelegates/challongeDelegate");
 const {startChallongeTournament} = require("../ControllerDelegates/challongeDelegate");
 const {clearChallongeTournamentParticipants} = require("../ControllerDelegates/challongeDelegate");
 const {getAllTournamentsAndSendEvent} = require("../util/HelperFunctions");
@@ -15,19 +16,16 @@ exports.create = (req, res) => {
 };
 
 exports.updateTournament = (req, res) => {
-
+    updateChallongeTournament(req.params.id)
+        .then( () => { res.status(204).send(); })
+        .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create challonge tournament'); });
 };
 
-exports.deleteTournament = (req, res) => {
-}
 
 exports.addParticipants = (req, res) => {
     addChallongeTournamentParticipants(req.params.id)
         .then( () => { getAllTournamentsAndSendEvent(res); })
         .catch(err => { sendStatusCodeAndLogError(res, err, 500, 'Error on create challonge tournament participants'); });
-}
-
-exports.updateParticipants = (req, res) => {
 }
 
 exports.startTournament = (req, res) => {
