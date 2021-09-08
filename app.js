@@ -19,6 +19,8 @@ module.exports = {
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date
 //TODO check sync of data -> seats -> are only synced on user login
+//TODO create useful logs statements
+//TODO write tests
 //App imports
 const express = require('express');
 const bodyParser = require("body-parser");

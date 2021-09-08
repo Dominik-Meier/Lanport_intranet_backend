@@ -23,6 +23,7 @@ db.team = require("./team.model") (sequelize, Sequelize);
 db.teamMember = require("./teamMember.model") (sequelize, Sequelize);
 db.tournamentParticipant = require("./tournamentParticipant.model") (sequelize, Sequelize);
 db.appComponent = require('./appComponent.model') (sequelize, Sequelize);
+db.feedback = require('./feedback.model') (sequelize, Sequelize);
 
 // Associations appComponent
 db.appComponent.hasMany(db.appComponent, {as: 'appComponents'});
@@ -66,6 +67,10 @@ db.tournamentParticipant.belongsTo(db.tournament);
 
 db.user.hasMany(db.tournamentParticipant);
 db.tournamentParticipant.belongsTo(db.user);
+
+// Associations Feedback
+db.user.hasMany(db.feedback);
+db.feedback.belongsTo(db.user)
 
 module.exports = db;
 
