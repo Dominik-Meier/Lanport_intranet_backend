@@ -7,6 +7,7 @@ const {getChallongeTournamentType} = require("../util/HelperFunctions");
 
 module.exports = {
     createChallongeTournament: createChallongeTournament,
+    updateChallongeTournament: updateChallongeTournament,
     addChallongeTournamentParticipants: addChallongeTournamentParticipants,
     clearChallongeTournamentParticipants: clearChallongeTournamentParticipants,
     startChallongeTournament: startChallongeTournament
@@ -18,8 +19,8 @@ async function getAllTournaments() {
 
 async function createChallongeTournament(id) {
     const tournament = await findOneTournament(id);
-    if (tournament.challongeId) {
-        throw 'Tournament is already create us update instead.'
+    if (!tournament.challongeId) {
+        throw 'Tournament is already create use update instead.'
     } else if (tournament.numberOfParticipants < 4) {
         throw "Participants must be greater than 3."
     } else {
@@ -45,6 +46,38 @@ async function createChallongeTournament(id) {
 
         await rp(options)
             .then( result => handleNewCreatedChallongeTournament(result, tournament))
+            .catch( err => handleError(err));
+    }
+}
+
+async function updateChallongeTournament(id) {
+    const tournament = await findOneTournament(id);
+    if (tournament.challongeId) {
+        throw 'Tournament is not create yet.'
+    } else if (tournament.numberOfParticipants < 4) {
+        throw "Participants must be greater than 3."
+    } else {
+        const options = {
+            method: 'PUT',
+            uri: 'https://api.challonge.com/v1/tournaments/' + tournament.challongeId.toString() + '.json',
+            headers: {'Accept': 'application/json'},
+            json: true,
+            body: {
+                api_key: process.env.CHALLONGE_API_KEY,
+                name: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                tournament_type: getChallongeTournamentType(tournament.gamemode.elimination),
+                url: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                open_signup: false,
+                hold_third_place_match: false,
+                accept_attachments: false,
+                hide_forum: true,
+                private: true,
+                signup_cap: tournament.numberOfParticipants
+            }
+        }
+
+
+        await rp(options)
             .catch( err => handleError(err));
     }
 }
