@@ -11,4 +11,5 @@ module.exports = app => {
     require("./teamMember.routes")(app);
     require("./tournamentParticipant.routes")(app);
     require("./challonge.routes")(app);
+    require("./feedback.routes")(app);
 };
