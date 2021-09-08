@@ -16,9 +16,6 @@ module.exports = {
 }
 
 //TODO what ware we doing with no full team on challonge creation?
-//TODO create enum for elimination types -> as challonge only support a view
-//TODO finish challonge operations predefined at router
-//TODO refactor challonge rest uri to rest like -> id before challonge
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date
 //TODO check sync of data -> seats -> are only synced on user login
