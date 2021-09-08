@@ -14,7 +14,8 @@ module.exports = {
     basePath: basePath,
     sendMsg: sendMsg,
 }
-//TODO check if registration has ended and deny new regis
+
+//TODO what ware we doing with no full team on challonge creation?
 //TODO create enum for elimination types -> as challonge only support a view
 //TODO finish challonge operations predefined at router
 //TODO refactor challonge rest uri to rest like -> id before challonge

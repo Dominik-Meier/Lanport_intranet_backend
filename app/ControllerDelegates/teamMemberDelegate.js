@@ -34,6 +34,8 @@ async function createTeamMemberWithPin(teamMember, pin, userId) {
             throw 'Team maximum size reached';
         } else if (tournament.started === true) {
             throw 'Tournament is not open for registration!';
+        } else if (Date.parse(tournament.registrationEndDate) < Date.now()) {
+            throw 'Registration phase has ended!'
         } else if (dbTeam.pin.toString() !== pin.toString()) {
             throw 'Pin does not match';
         } else if (joinedOtherTeam) {
