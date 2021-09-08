@@ -29,6 +29,8 @@ async function createTournamentParticipant(tournamentParticipant, userId) {
             throw 'Limit of registration reached';
         } else if (tournament.started === true) {
             throw 'Tournament is not open for registration!';
+        } else if (Date.parse(tournament.registrationEndDate) < Date.now()) {
+            throw 'Registration phase has ended!'
         } else if (!user.payed) {
             throw 'Only payed user are allowed to register for tournaments';
         } else {
