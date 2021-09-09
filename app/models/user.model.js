@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         }
     }, {
+        defaultScope: {
+            exclude: ['token', 'refreshToken']
+        },
         timestamps: false
     });
 

@@ -3,6 +3,7 @@ const Lanparty = db.lanparty;
 
 module.exports = {
     findAllLanparties: findAllLanparties,
+    findActiveLanparty: findActiveLanparty,
     updateExistingLanparty: updateExistingLanparty,
     addLanparty: addLanparty,
     deleteLanparty: deleteLanparty
@@ -10,6 +11,10 @@ module.exports = {
 
 async function findAllLanparties() {
     return Lanparty.findAll()
+}
+
+async function findActiveLanparty() {
+    return Lanparty.findOne({where: {active: true}});
 }
 
 async function updateExistingLanparty(lanparty) {
