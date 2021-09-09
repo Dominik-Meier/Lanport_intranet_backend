@@ -9,13 +9,16 @@ module.exports = (sequelize, Sequelize) => {
         suggestions: {
             type: Sequelize.TEXT
         },
-        public: {
+        isPublic: {
             type: Sequelize.BOOLEAN
         },
-        anonymous: {
+        isAnonymous: {
             type: Sequelize.BOOLEAN
         },
         userId: {
+            type: Sequelize.INTEGER,
+        },
+        lanpartyId: {
             type: Sequelize.INTEGER,
         },
     }, {

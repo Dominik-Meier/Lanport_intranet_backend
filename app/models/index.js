@@ -72,5 +72,8 @@ db.tournamentParticipant.belongsTo(db.user);
 db.user.hasMany(db.feedback);
 db.feedback.belongsTo(db.user)
 
+db.lanparty.hasMany(db.feedback);
+db.feedback.belongsTo(db.lanparty);
+
 module.exports = db;
 

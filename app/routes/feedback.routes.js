@@ -1,17 +1,15 @@
 const {grantAccess} = require("../util/roleBasedAccess");
 module.exports = app => {
-    const challonge = require("../controllers/challonge.controller.js");
+    const feedback = require("../controllers/feedback.controller.js");
     const auth = require("../util/auth")
 
     const router = require("express").Router();
 
-    router.get("/:id", auth, grantAccess('mitglied'), challonge.getTournament);
-    router.post("/:id", auth, grantAccess('mitglied'), challonge.create);
-    router.put("/:id", auth, grantAccess('mitglied'), challonge.updateTournament);
-    router.post("/:id/start", auth, grantAccess('mitglied'), challonge.startTournament);
+    router.get("/", auth, grantAccess('user'), feedback.getAll);
+    router.get("/:id", auth, grantAccess('user'), feedback.getOne);
+    router.post("/", auth, grantAccess('user'), feedback.create);
+    router.put("/:id", auth, grantAccess('mitglied'), feedback.update);
+    router.delete("/:id", auth, grantAccess('mitglied'), feedback.delete);
 
-    router.post("/:id/participants/", auth, grantAccess('mitglied'), challonge.addParticipants)
-    router.delete("/:id/participants/", auth, grantAccess('mitglied'), challonge.deleteParticipants)
-
-    app.use('/api/tournaments/challonge', router);
+    app.use('/api/feedback', router);
 };
