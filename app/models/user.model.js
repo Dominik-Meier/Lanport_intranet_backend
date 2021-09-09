@@ -18,6 +18,12 @@ module.exports = (sequelize, Sequelize) => {
         level: {
             type: Sequelize.STRING,
         },
+        meal_pass_payed: {
+            type: Sequelize.BOOLEAN,
+        },
+        meal_pass: {
+            type: Sequelize.BOOLEAN,
+        },
         token: {
             type: Sequelize.STRING,
         },

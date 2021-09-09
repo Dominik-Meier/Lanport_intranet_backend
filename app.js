@@ -15,6 +15,8 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
+//TODO kitchen tool tell ingredient out of stock
+
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date

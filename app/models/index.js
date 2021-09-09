@@ -24,6 +24,10 @@ db.teamMember = require("./teamMember.model") (sequelize, Sequelize);
 db.tournamentParticipant = require("./tournamentParticipant.model") (sequelize, Sequelize);
 db.appComponent = require('./appComponent.model') (sequelize, Sequelize);
 db.feedback = require('./feedback.model') (sequelize, Sequelize);
+db.meal = require('./meal.model') (sequelize, Sequelize);
+db.mealOption = require('./mealOption.model') (sequelize, Sequelize);
+db.mealOrder = require('./mealOrder.model') (sequelize, Sequelize);
+db.mealOrderOption = require('./mealOrderOption.model') (sequelize, Sequelize);
 
 // Associations appComponent
 db.appComponent.hasMany(db.appComponent, {as: 'appComponents'});
@@ -74,6 +78,18 @@ db.feedback.belongsTo(db.user)
 
 db.lanparty.hasMany(db.feedback);
 db.feedback.belongsTo(db.lanparty);
+
+// Associations Meals
+db.meal.hasMany(db.mealOption);
+db.mealOption.belongsTo(db.meal);
+
+db.lanparty.hasMany(db.meal, {onDelete: 'cascade'});
+db.meal.belongsTo(db.lanparty);
+
+// Associations MealOrders
+
+db.mealOrder.hasMany(db.mealOrderOption);
+db.mealOrderOption.belongsTo(db.mealOrder);
 
 module.exports = db;
 
