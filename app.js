@@ -15,7 +15,8 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
-//TODO kitchen tool tell ingredient out of stock
+//TODO kitchen tool tell ingredient or meal out of stock
+//TODO menuItem each meal can only once be selected
 
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access

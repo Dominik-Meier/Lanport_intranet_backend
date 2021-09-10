@@ -28,6 +28,8 @@ db.meal = require('./meal.model') (sequelize, Sequelize);
 db.mealOption = require('./mealOption.model') (sequelize, Sequelize);
 db.mealOrder = require('./mealOrder.model') (sequelize, Sequelize);
 db.mealOrderOption = require('./mealOrderOption.model') (sequelize, Sequelize);
+db.menu = require('./menu.model') (sequelize, Sequelize);
+db.menuItem = require('./menuItem.model') (sequelize, Sequelize);
 
 // Associations appComponent
 db.appComponent.hasMany(db.appComponent, {as: 'appComponents'});
@@ -87,9 +89,27 @@ db.lanparty.hasMany(db.meal, {onDelete: 'cascade'});
 db.meal.belongsTo(db.lanparty);
 
 // Associations MealOrders
-
 db.mealOrder.hasMany(db.mealOrderOption);
 db.mealOrderOption.belongsTo(db.mealOrder);
+
+db.user.hasMany(db.mealOrder);
+db.mealOrder.belongsTo(db.user);
+
+db.meal.hasMany(db.mealOrder);
+db.mealOrder.belongsTo(db.meal);
+
+db.mealOption.hasMany(db.mealOrderOption);
+db.mealOrderOption.belongsTo(db.mealOption);
+
+// Associations menu
+db.menu.hasMany(db.menuItem, {onDelete: 'cascade'});
+db.menuItem.belongsTo(db.menu);
+
+db.lanparty.hasMany(db.menu);
+db.menu.belongsTo(db.lanparty);
+
+db.meal.hasMany(db.menuItem);
+db.menuItem.belongsTo(db.meal);
 
 module.exports = db;
 

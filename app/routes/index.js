@@ -13,4 +13,5 @@ module.exports = app => {
     require("./challonge.routes")(app);
     require("./feedback.routes")(app);
     require("./meal.routes")(app);
+    require("./menu.routes")(app);
 };
