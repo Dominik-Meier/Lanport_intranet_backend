@@ -89,7 +89,7 @@ db.lanparty.hasMany(db.meal, {onDelete: 'cascade'});
 db.meal.belongsTo(db.lanparty);
 
 // Associations MealOrders
-db.mealOrder.hasMany(db.mealOrderOption);
+db.mealOrder.hasMany(db.mealOrderOption, {onDelete: 'cascade'});
 db.mealOrderOption.belongsTo(db.mealOrder);
 
 db.user.hasMany(db.mealOrder);
@@ -97,6 +97,9 @@ db.mealOrder.belongsTo(db.user);
 
 db.meal.hasMany(db.mealOrder);
 db.mealOrder.belongsTo(db.meal);
+
+db.menu.hasMany(db.mealOrder);
+db.mealOrder.belongsTo(db.menu);
 
 db.mealOption.hasMany(db.mealOrderOption);
 db.mealOrderOption.belongsTo(db.mealOption);

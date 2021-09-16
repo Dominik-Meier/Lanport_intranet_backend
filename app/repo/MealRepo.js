@@ -1,5 +1,9 @@
 const db = require("../models");
 const Meal = db.meal;
+const User = db.user;
+const Menu = db.menu;
+const MealOrder = db.mealOrder;
+const MealOrderOption = db.mealOrderOption;
 const MealOption = db.mealOption
 const {logger} = require('../../app')
 
@@ -13,6 +17,12 @@ module.exports = {
     changeMealOption: changeMealOption,
     removeMeal: removeMeal,
     removeMealOption: removeMealOption,
+    findAllMealOrder: findAllMealOrder,
+    findAllMealOrderByUserId: findAllMealOrderByUserId,
+    findOneMealOrderById: findOneMealOrderById,
+    createMealOrder: createMealOrder,
+    createMealOrderOption: createMealOrderOption,
+    updateMealOrderStatus: updateMealOrderStatus
 }
 
 async function getAllMeals() {
@@ -55,4 +65,30 @@ async function removeMealOption(id) {
     const deletedMealOption = await findOneMealOptionById(id);
     await MealOption.destroy({where: {id: id}});
     return deletedMealOption;
+}
+
+async function findAllMealOrder() {
+    return MealOrder.findAll({ include: [ User, Meal, Menu, {model: MealOrderOption, include: [MealOption]}]});
+}
+
+async function findAllMealOrderByUserId(userId) {
+    return MealOrder.findAll({where: {userId: userId}, include: [ User, Meal, Menu, {model: MealOrderOption, include: [MealOption]}]});
+}
+
+async function findOneMealOrderById(id) {
+    return MealOrder.findOne({where: {id: id}, include: [ User, Meal, Menu, {model: MealOrderOption, include: [MealOption]}]});
+}
+
+async function createMealOrder(mealOrder) {
+    return MealOrder.create(mealOrder);
+}
+
+async function createMealOrderOption(mealOrderOption) {
+    return MealOrderOption.create(mealOrderOption);
+}
+
+async function updateMealOrderStatus(mealOrderId, newStatus) {
+    const order = await findOneMealOrderById(mealOrderId);
+    order.status = newStatus;
+    return order.save();
 }

@@ -15,7 +15,8 @@ module.exports = {
     getAllGameModesAndSendEvent: getAllGameModesAndSendEvent,
     getAllTournamentTypeAndSendEvent: getAllTournamentTypeAndSendEvent,
     getUserIdFromJwt: getUserIdFromJwt,
-    getChallongeTournamentType: getChallongeTournamentType
+    getChallongeTournamentType: getChallongeTournamentType,
+    countArray: countArray
 }
 
 function createEventMsg(eventType, data) {
@@ -109,4 +110,12 @@ function getChallongeTournamentType(challongeTournamentType) {
     } else {
         throw 'Elimination must be one of single elimination / double elimination / round robin / swiss';
     }
+}
+
+function countArray(arr, searchTerm, predicate) {
+    let counts = 0;
+    for (const element of arr) {
+        predicate(element, searchTerm) ? counts++ : counts;
+    }
+    return counts;
 }

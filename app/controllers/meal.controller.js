@@ -1,3 +1,6 @@
+const {mealDelegateOrderStatusChange} = require("../ControllerDelegates/mealDelegate");
+const {mealDelegateGetAllOrders} = require("../ControllerDelegates/mealDelegate");
+const {mealDelegatePlaceOrder} = require("../ControllerDelegates/mealDelegate");
 const {mealDelegateDeleteMeal} = require("../ControllerDelegates/mealDelegate");
 const {mealDelegateDeleteMealOption} = require("../ControllerDelegates/mealDelegate");
 const {mealDelegateUpdateMealOption} = require("../ControllerDelegates/mealDelegate");
@@ -77,17 +80,28 @@ exports.deleteMealOption = (req, res) => {
 };
 
 exports.getAllOrders = (req, res) => {
-
+    mealDelegateGetAllOrders(req.query.userId)
+        .then( orders => res.status(200).send(orders))
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on get orders'); });
 };
 
 exports.getOneOrder = (req, res) => {
-
 };
 
 exports.placeOrder = (req, res) => {
-
+    mealDelegatePlaceOrder(req.body, req.headers["authorization"])
+        .then( order => {
+            res.status(204).send();
+            sendMsg(createEventMsg('MealOrderPlacedEvent', order));
+        })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on place order'); });
 };
 
 exports.orderStatusChange = (req, res) => {
-
+    mealDelegateOrderStatusChange(req.params.id, req.params.status)
+        .then( order => {
+            res.status(204).send();
+            sendMsg(createEventMsg('MealOrderStatusUpdatedEvent', order));
+        })
+        .catch((err) => { sendStatusCodeAndLogError(res, err, 500, 'Error on update order status'); });
 };

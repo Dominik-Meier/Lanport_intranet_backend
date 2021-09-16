@@ -35,6 +35,7 @@ async function menuDelegateCreateMenu() {
         startTime: Date.now(),
         endTime: Date.now(),
         lanpartyId: lanparty.id,
+        cultivable: 1,
         infos: ''
     }
     return addMenu(menu);

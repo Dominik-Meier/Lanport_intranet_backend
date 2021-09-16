@@ -6,6 +6,15 @@ const rp = require('request-promise');
 const internetAvailable = require("internet-available");
 const {logger} = require('../../app')
 const jwt = require('jsonwebtoken')
+const {findOneMenuById} = require("../repo/MenuRepo");
+const {updateMealOrderStatus} = require("../repo/MealRepo");
+const {countArray} = require("../util/HelperFunctions");
+const {findAllMealOrder} = require("../repo/MealRepo");
+const {findAllMealOrderByUserId} = require("../repo/MealRepo");
+const {findOneMealOrderById} = require("../repo/MealRepo");
+const {createMealOrderOption} = require("../repo/MealRepo");
+const {createMealOrder} = require("../repo/MealRepo");
+const {getUserIdFromJwt} = require("../util/HelperFunctions");
 const {removeMealOption} = require("../repo/MealRepo");
 const {removeMeal} = require("../repo/MealRepo");
 const {findOneMealById} = require("../repo/MealRepo");
@@ -26,6 +35,10 @@ module.exports = {
     mealDelegateUpdateMealOption: mealDelegateUpdateMealOption,
     mealDelegateDeleteMeal: mealDelegateDeleteMeal,
     mealDelegateDeleteMealOption: mealDelegateDeleteMealOption,
+    mealDelegateGetAllOrders: mealDelegateGetAllOrders,
+    mealDelegateGetOneOrder: mealDelegateGetOneOrder,
+    mealDelegatePlaceOrder: mealDelegatePlaceOrder,
+    mealDelegateOrderStatusChange: mealDelegateOrderStatusChange
 }
 
 async function mealDelegateGetAll() {
@@ -73,20 +86,52 @@ async function mealDelegateDeleteMealOption(id) {
     return removeMealOption(id);
 }
 
-async function mealDelegateGetAllOrders() {
-
+async function mealDelegateGetAllOrders(userId) {
+    if (userId) {
+        return findAllMealOrderByUserId(userId);
+    } else {
+        return findAllMealOrder();
+    }
 }
 
-async function mealDelegateGetOneOrder() {
-
+async function mealDelegateGetOneOrder(id) {
+    return findOneMealOrderById(id);
 }
 
+async function mealDelegatePlaceOrder(sentMealOrder, jwt) {
+    const jwtUserId = getUserIdFromJwt(jwt);
+    const menu = await findOneMenuById(sentMealOrder.menuId);
+    const userOrders = await findAllMealOrderByUserId(jwtUserId);
+    const orderCount = countArray(userOrders, sentMealOrder.menuId,
+        function (element, searchTerm) {return element.menuId === searchTerm});
+    if(orderCount >= menu.cultivable) {
+        throw 'Essen wurde bereits bestellt'
+    }
 
-async function mealDelegatePlaceOrder() {
+    const mealOrder = {
+        mealId: sentMealOrder.mealId,
+        userId: jwtUserId,
+        menuId: sentMealOrder.menuId,
+        status: 'ordered',
+        extras: sentMealOrder.extras,
+        orderTime: Date.now()
+    }
 
+    const placedMealOrder = await createMealOrder(mealOrder);
+    for ( const sentOrderOption of sentMealOrder.mealOrderOptions) {
+        const orderOption = {
+            mealOrderId: placedMealOrder.id,
+            mealOptionId: sentOrderOption.mealOptionId,
+            isOrdered: sentOrderOption.isOrdered,
+        }
+        await createMealOrderOption(orderOption)
+    }
+
+    return mealDelegateGetOneOrder(placedMealOrder.id);
 }
 
-async function mealDelegateOrderStatusChange() {
-
+async function mealDelegateOrderStatusChange(orderId, newStatus) {
+    const order = updateMealOrderStatus(orderId, newStatus);
+    return order;
 }
 

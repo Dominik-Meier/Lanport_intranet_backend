@@ -175,5 +175,6 @@ async function handleNewCreatedChallongeTournament(res, tournament) {
 }
 
 function handleError(err) {
-    throw 'error on challonge request';
+    // TODO err.error is a json log to throw
+    throw 'error on challonge request ';
 }

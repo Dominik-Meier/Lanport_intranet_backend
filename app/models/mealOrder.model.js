@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
         userId: {
             type: Sequelize.INTEGER,
         },
+        menuId: {
+            type: Sequelize.INTEGER,
+        },
         status: {
             type: Sequelize.ENUM('ordered', 'progress', 'made', 'done')
         },

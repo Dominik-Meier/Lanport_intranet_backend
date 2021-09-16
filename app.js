@@ -17,6 +17,8 @@ module.exports = {
 
 //TODO kitchen tool tell ingredient or meal out of stock
 //TODO menuItem each meal can only once be selected
+//TODO secure orders that only esssens_pass people can order
+//TODO time window to order stuff as user -> kitchenTool can order any time
 
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access

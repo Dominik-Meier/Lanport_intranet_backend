@@ -39,7 +39,7 @@ async function updateAppComponent(appRegisterComponent, parentId) {
         dbAppComponent.activeForBeamerPresentation = appRegisterComponent.activeForBeamerPresentation;
         dbAppComponent.icon = appRegisterComponent.icon;
         dbAppComponent.beamerTimer = appRegisterComponent.beamerTimer;
-        await  dbAppComponent.save();
+        await dbAppComponent.save();
     }
 }
 

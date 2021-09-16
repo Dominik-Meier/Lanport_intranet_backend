@@ -14,4 +14,5 @@ module.exports = app => {
     require("./feedback.routes")(app);
     require("./meal.routes")(app);
     require("./menu.routes")(app);
+    require("./mealOrder.routes")(app);
 };

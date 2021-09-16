@@ -15,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
         infos: {
             type: Sequelize.STRING,
         },
+        cultivable: {
+            type: Sequelize.INTEGER
+        }
     }, {
         timestamps: false
     });
