@@ -36,6 +36,8 @@ const winston = require('winston');
 const helmet = require("helmet");
 const WebSocket  = require('ws');
 const db = require("./app/models");
+const https = require('https');
+const fs = require('fs');
 require('dotenv').config();
 
 //Create express app and port
@@ -53,21 +55,6 @@ app.use(helmet.noSniff());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy());
 app.use(helmet.xssFilter());
-
-//WebSocket
-const wss = new WebSocket.Server({port: 3001});
-
-wss.on('connection', ws => {
-    logger.info('Client connected');
-    ws.on('close', () =>{
-        logger.info("Client disconnected");
-    })
-})
-
-function sendMsg(msg) {
-    logger.info('sending new message: ', msg.toString());
-    wss.clients.forEach( client => client.send(JSON.stringify(msg)));
-}
 
 //Set app parameters and attributes
 app.use(cors());
@@ -109,5 +96,26 @@ app.use(morgan('combined', { stream: logger.stream }));
 require('./app/routes/index')(app);
 
 //Start listening for requests
-app.listen(process.env.APP_PORT, () => logger.info(`Example app listening on port ${process.env.APP_PORT}!`));
+const server = https.createServer({
+    key: fs.readFileSync( './cert.key'),
+    cert: fs.readFileSync('./cert.crt'),
+    passphrase: 'test'
+    }, app
+)
+server.listen(process.env.APP_PORT, () => logger.info(`Example app listening on port ${process.env.APP_PORT}!`));
 app.get('/', (req, res) => res.send('This is the Rest-API for the Lanport-Intranet, here ist nothing for you as a browser!'));
+
+//WebSocket
+const wss = new WebSocket.Server({server});
+
+wss.on('connection', ws => {
+    logger.info('Client connected');
+    ws.on('close', () =>{
+        logger.info("Client disconnected");
+    })
+})
+
+function sendMsg(msg) {
+    logger.info('sending new message: ', msg.toString());
+    wss.clients.forEach( client => client.send(JSON.stringify(msg)));
+}
