@@ -38,6 +38,7 @@ async function handleGetUserBySess(sess) {
                 return remoteUser;
             })
             .catch( async (err) => {
+                logger.error(err);
                 return await handleLocalUser(sess);
             })
     } else {
@@ -56,7 +57,8 @@ async function handleRemoteUser(sess, callback) {
         form: { sess: sess, api_key: 'fghe456uz', send: 'sess_check' }
     };
     user = await rp(options)
-        .then(body => {return handleResponse(JSON.parse(body), sess)})
+        .then(async body => {body = body.replace('URL nicht vorhanden. (api)', '');
+            return await handleResponse(JSON.parse(body), sess)})
         .catch(err =>  { logger.error(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }
