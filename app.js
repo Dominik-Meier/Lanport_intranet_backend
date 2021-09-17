@@ -15,6 +15,12 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
+//TODO multiple user sessions saving
+//TODO add user agent to request for get sess
+//TODO can not login with browsers
+//TODO frontend request all 2 secs something to backend
+//TODO websocket connection is not working 
+
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date
