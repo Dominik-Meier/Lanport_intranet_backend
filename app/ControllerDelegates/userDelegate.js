@@ -54,11 +54,13 @@ async function handleRemoteUser(sess, callback) {
         method: 'POST',
         jar: cookieJar,
         uri: 'https://lanport.ch/api/sess',
-        form: { sess: sess, api_key: 'fghe456uz', send: 'sess_check' }
+        form: { sess: sess, api_key: 'fghe456uz', send: 'sess_check' },
+        headers: {
+            'User-Agent': 'Lanport Backend Intranet-Agent'
+        }
     };
     user = await rp(options)
-        .then(async body => {body = body.replace('URL nicht vorhanden. (api)', '');
-            return await handleResponse(JSON.parse(body), sess)})
+        .then(async body => { return await handleResponse(JSON.parse(body), sess)})
         .catch(err =>  { logger.error(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }

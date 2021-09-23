@@ -19,8 +19,9 @@ module.exports = {
 //TODO add user agent to request for get sess
 //TODO can not login with browsers
 //TODO frontend request all 2 secs something to backend
-//TODO websocket connection is not working 
+//TODO websocket connection is not working
 
+//TODO api for split teams or change mode options -> like 3vs3 teams to one 1vs -> teamMembers to tp
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access
 //TODO check if there is a way to delete sess as I do not have an exp date
@@ -102,6 +103,7 @@ const server = https.createServer({
     passphrase: 'test'
     }, app
 )
+
 server.listen(process.env.APP_PORT, () => logger.info(`Example app listening on port ${process.env.APP_PORT}!`));
 app.get('/', (req, res) => res.send('This is the Rest-API for the Lanport-Intranet, here ist nothing for you as a browser!'));
 
