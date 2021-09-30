@@ -26,19 +26,19 @@ async function handleGetUserDevMode(sess) {
     }
 }
 
-async function handleGetUserBySess(sess) {
+async function handleGetUserBySess(sess, userAgent) {
     if (sess){
         return await internetAvailable({
             timeout: 500,
             retries: 5
         })
             .then( async () => {
-                const remoteUser = await handleRemoteUser(sess);
+                const remoteUser = await handleRemoteUser(sess, userAgent);
                 await createAndSaveJwtTokens(remoteUser);
                 return remoteUser;
             })
             .catch( async (err) => {
-                logger.error(err);
+                logger.error('handleLocalUser - Error - ',err);
                 return await handleLocalUser(sess);
             })
     } else {
@@ -47,7 +47,7 @@ async function handleGetUserBySess(sess) {
 
 }
 
-async function handleRemoteUser(sess, callback) {
+async function handleRemoteUser(sess, userAgent) {
     const cookieJar = request.jar();
     let user = null;
     const options = {
@@ -56,7 +56,7 @@ async function handleRemoteUser(sess, callback) {
         uri: 'https://lanport.ch/api/sess',
         form: { sess: sess, api_key: 'fghe456uz', send: 'sess_check' },
         headers: {
-            'User-Agent': 'Lanport Backend Intranet-Agent'
+            'User-Agent': userAgent
         }
     };
     user = await rp(options)
