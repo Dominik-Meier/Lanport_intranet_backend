@@ -15,12 +15,6 @@ module.exports = {
     sendMsg: sendMsg,
 }
 
-//TODO multiple user sessions saving
-//TODO add user agent to request for get sess
-//TODO can not login with browsers
-//TODO frontend request all 2 secs something to backend
-//TODO websocket connection is not working
-
 //TODO api for split teams or change mode options -> like 3vs3 teams to one 1vs -> teamMembers to tp
 //TODO what ware we doing with no full team on challonge creation?
 //TODO role based resource access
