@@ -13,10 +13,6 @@ module.exports = {
     startChallongeTournament: startChallongeTournament
 }
 
-async function getAllTournaments() {
-    return findAllTournaments();
-}
-
 async function createChallongeTournament(id) {
     const tournament = await findOneTournament(id);
     if (tournament.challongeId < 0) {
@@ -32,9 +28,9 @@ async function createChallongeTournament(id) {
                 json: true,
                 body: {
                     api_key: process.env.CHALLONGE_API_KEY,
-                    name: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                    name: tournament.lanparty.name.concat('_').concat(tournament.name.toString()).replace(/ /g,''),
                     tournament_type: getChallongeTournamentType(tournament.gamemode.elimination),
-                    url: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                    url: tournament.lanparty.name.concat('_').concat(tournament.name.toString()).replace(/ /g,''),
                     open_signup: false,
                     hold_third_place_match: false,
                     accept_attachments: false,
@@ -52,7 +48,7 @@ async function createChallongeTournament(id) {
 
 async function updateChallongeTournament(id) {
     const tournament = await findOneTournament(id);
-    if (tournament.challongeId) {
+    if (tournament.challongeId < 0) {
         throw 'Tournament is not create yet.'
     } else if (tournament.numberOfParticipants < 4) {
         throw "Participants must be greater than 3."
@@ -64,9 +60,9 @@ async function updateChallongeTournament(id) {
             json: true,
             body: {
                 api_key: process.env.CHALLONGE_API_KEY,
-                name: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                name: tournament.lanparty.name.concat('_').concat(tournament.name.toString()).replace(/ /g,''),
                 tournament_type: getChallongeTournamentType(tournament.gamemode.elimination),
-                url: tournament.lanparty.name.concat('_').concat(tournament.name.toString()),
+                url: tournament.lanparty.name.concat('_').concat(tournament.name.toString()).replace(/ /g,''),
                 open_signup: false,
                 hold_third_place_match: false,
                 accept_attachments: false,
@@ -84,13 +80,13 @@ async function updateChallongeTournament(id) {
 
 async function addChallongeTournamentParticipants(id) {
     const tournament = await findOneTournament(id);
-    if (!tournament.challongeId) {
+    if (tournament.challongeId < 0) {
         throw 'Challonge tournament is not created yet.'
     } else if (!tournament.started) {
         throw 'Tournament needs to be started to add challonge participants'
     } else {
         if (tournament.challongeParticipantsAdded) {
-            await clearChallongeTournamentParticipants(tournament.challongeId);
+            await clearChallongeTournamentParticipants(tournament.id);
         }
 
         const participantNames = [];
