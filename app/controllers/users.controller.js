@@ -7,12 +7,13 @@ const {config} = require('../../app')
 // TODO if user send jwt token with request skip creating new jwt
 // refresh of token needs to be implemented first
 exports.findOne = async (req, res) => {
+    const userAgent = req.headers['user-agent'];
     if (config === 'dev') {
         handleGetUserDevMode(req.params.id)
             .then(user => res.send(user) )
             .catch(err => { sendStatusCodeAndLogError(res, err, 401, 'No sess for user found'); });
     } else {
-        handleGetUserBySess(req.params.id)
+        handleGetUserBySess(req.params.id, userAgent)
             .then(user => res.send(user))
             .catch(err => { sendStatusCodeAndLogError(res, err, 401, 'No sess for user found'); });
     }
