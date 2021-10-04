@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
         data: {
            type: Sequelize.TEXT
         },
+        order: {
+            type: Sequelize.INTEGER
+        },
         activeForIntranet: {
             type: Sequelize.BOOLEAN
         },

@@ -6,13 +6,15 @@ module.exports = {
     createAppComponent: createAppComponent,
     updateAppComponent: updateAppComponent,
     removeAppComponent: removeAppComponent,
+    getHighestOrderNumber: getHighestOrderNumber
 }
 
 async function findAllAppComponent() {
     return AppComponent.findAll({where: {appComponentId: null}, include: [{model: AppComponent, as: 'appComponents'}]});
 }
 
-async function createAppComponent(appRegisterComponent, parentId) {
+async function createAppComponent(appRegisterComponent, parentId, highestOrder) {
+    const newOrderNr = isNaN(highestOrder) ? 0 : highestOrder + 1;
     const newAppRegisterComponent = {
         id: null,
         name: appRegisterComponent.name,
@@ -22,7 +24,8 @@ async function createAppComponent(appRegisterComponent, parentId) {
         activeForIntranet: appRegisterComponent.activeForIntranet,
         activeForBeamerPresentation: appRegisterComponent.activeForBeamerPresentation,
         icon: appRegisterComponent.icon,
-        beamerTimer: appRegisterComponent.beamerTimer
+        beamerTimer: appRegisterComponent.beamerTimer,
+        order: newOrderNr
     }
     const dbAppComponent = await AppComponent.create(newAppRegisterComponent);
     return dbAppComponent;
@@ -39,7 +42,8 @@ async function updateAppComponent(appRegisterComponent, parentId) {
         dbAppComponent.activeForBeamerPresentation = appRegisterComponent.activeForBeamerPresentation;
         dbAppComponent.icon = appRegisterComponent.icon;
         dbAppComponent.beamerTimer = appRegisterComponent.beamerTimer;
-        await  dbAppComponent.save();
+        dbAppComponent.order = appRegisterComponent.order;
+        await dbAppComponent.save();
     }
 }
 
@@ -47,4 +51,9 @@ async function removeAppComponent(id) {
     const destroyedAppComponent = await AppComponent.findOne({where: {id: id}});
     await AppComponent.destroy({where: {id: id}});
     return destroyedAppComponent;
+}
+
+async function getHighestOrderNumber(parentId) {
+    const queryId = parentId ? parentId : null;
+    return AppComponent.max('order', {where: {appComponentId: queryId}});
 }
