@@ -86,7 +86,7 @@ server {
 #!/bin/bash
 
 # Get the day of week
-_dow="$(date +'%A')"
+_dow="$(date +'%T')"
 
 # open database, wait up to 20 seconds for any activity to end and create a backup file
 sqlite3 /home/intranet/backend/Dominik-Meier/prod.sqlite << EOF
