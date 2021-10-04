@@ -8,10 +8,13 @@ This is the backend service of the lanport intranet.
 - run 'npm run `mode`'
 - mode -> `dev` or `prod`
 
-<h2>Deployment</h2>
+<h1>Deployment</h1>
+<h2>As node js as Background process</h2>
+
 - Start process with: `nohup npm run prod &`
 - At vm use systemctl `sudo systemctl start lp_backend` `sudo systemctl stop lp_backend` `sudo systemctl restart lp_backend`
 - be sure the following script is placed inside `/usr/lib//systemd/system/lp_backend.service`:
+
 ```
 [Unit]
 Description=lp intranet backend
@@ -28,6 +31,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
+<h2>Served with Nginx</h2>
 - Use reverse proxy of nginx to serve request
 - Use the following nginx config inside `/etc/nginx/conf.d/app.conf`
 - this sets up any nginx server for the frontend backend with websockets all secured by ssl
@@ -68,4 +72,25 @@ server {
   try_files $uri $uri/ /index.html;
  }
 }
+```
+
+
+<h2>DB Backup</h2>
+- For the Db backup make sure that a crontab exsist us cmd `crontab -e`
+```
+0 * * * * /home/intranet/backend/Dominik-Meier/db_backup_script.sh
+```
+
+- make sure the following script exists `/home/intranet/backend/Dominik-Meier/db_backup_script.sh`
+```
+#!/bin/bash
+
+# Get the day of week
+_dow="$(date +'%A')"
+
+# open database, wait up to 20 seconds for any activity to end and create a backup file
+sqlite3 /home/intranet/backend/Dominik-Meier/prod.sqlite << EOF
+.timeout 20000
+.backup /home/intranet/backend/Dominik-Meier/db_backups/prod_${_dow}.sqlite
+EOF
 ```
