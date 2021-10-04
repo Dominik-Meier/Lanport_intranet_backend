@@ -10,9 +10,16 @@ exports.grantAccess = function (neededRole) {
             if (splitToken.length === 2) {
                 if (splitToken[0].toUpperCase() === 'BEARER') {
                     const level = jwt.verify(splitToken[1].trim(), config.JWT_SECRET).level;
-                    if (neededRole.toUpperCase() === 'USER' && ( level.toUpperCase() === 'USER' || level.toUpperCase() === 'MITGLIED' || level.toUpperCase() === 'ADMIN')) {
+                    if (neededRole.toUpperCase() === 'USER' && (
+                        level.toUpperCase() === 'USER' ||
+                        level.toUpperCase() === 'MITGLIED' ||
+                        level.toUpperCase() === 'ADMIN' ||
+                        level.toUpperCase() === 'KASSIE' )) {
                         next();
-                     }else if (neededRole.toUpperCase() === 'MITGLIED' && (level.toUpperCase() === 'MITGLIED' || level.toUpperCase() === 'ADMIN')) {
+                    } else if (neededRole.toUpperCase() === 'MITGLIED' && (
+                        level.toUpperCase() === 'MITGLIED' ||
+                        level.toUpperCase() === 'KASSIE' ||
+                        level.toUpperCase() === 'ADMIN')) {
                         next();
                     } else if (neededRole.toUpperCase() === 'ADMIN' && level.toUpperCase() === 'ADMIN') {
                         next();
