@@ -5,7 +5,7 @@ module.exports = app => {
 
     const router = require("express").Router();
 
-    router.get("/", auth, angularAppConfig.find);
+    router.get("/", auth, grantAccess('user'), angularAppConfig.find);
     router.post("/", auth, grantAccess('mitglied'), angularAppConfig.create);
     router.delete("/appComponent/:id", auth, grantAccess('mitglied'), angularAppConfig.deleteAppComponent);
     router.post("/appComponent", auth, grantAccess('mitglied'), angularAppConfig.addAppComponent);
