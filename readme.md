@@ -9,6 +9,19 @@ This is the backend service of the lanport intranet.
 - mode -> `dev` or `prod`
 
 <h1>Deployment</h1>
+
+- create a env file at `/home/intranet/backend/Dominik-Meier/.env`
+```
+APP_PORT=3000
+APP_JSON_PARSER_LIMIT=50mb
+APP_URL_ENCODER_LIMIT=50mb
+JWT_SECRET=<jwt_secret>
+JWT_ISSUER=backend.intranet.lanport.ch
+JWT_TIMER_TOKEN=5min
+JWT_TIMER_REFRESH_TOKEN=30d
+CHALLONGE_API_KEY=<challonge_token>
+```
+
 <h2>As node js as Background process</h2>
 
 - Start process with: `nohup npm run prod &`
