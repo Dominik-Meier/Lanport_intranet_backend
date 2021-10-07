@@ -5,9 +5,9 @@ module.exports = app => {
 
     const router = require("express").Router();
 
-    router.get("/", auth, grantAccess('user'), feedback.getAll);
-    router.get("/:id", auth, grantAccess('user'), feedback.getOne);
-    router.post("/", auth, grantAccess('user'), feedback.create);
+    router.get("/", auth, grantAccess('guest'), feedback.getAll);
+    router.get("/:id", auth, grantAccess('guest'), feedback.getOne);
+    router.post("/", auth, grantAccess('guest'), feedback.create);
     router.put("/:id", auth, grantAccess('mitglied'), feedback.update);
     router.delete("/:id", auth, grantAccess('mitglied'), feedback.delete);
 
