@@ -10,8 +10,8 @@ exports.grantAccess = function (neededRole) {
             if (splitToken.length === 2) {
                 if (splitToken[0].toUpperCase() === 'BEARER') {
                     const level = jwt.verify(splitToken[1].trim(), config.JWT_SECRET).level;
-                    if (neededRole.toUpperCase() === 'GAST' && (
-                        level.toUpperCase() === 'GAST' ||
+                    if (neededRole.toUpperCase() === 'GUEST' && (
+                        level.toUpperCase() === 'GUEST' ||
                         level.toUpperCase() === 'MITGLIED' ||
                         level.toUpperCase() === 'ADMIN' ||
                         level.toUpperCase() === 'KASSIE' )) {
