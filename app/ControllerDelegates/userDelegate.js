@@ -28,19 +28,14 @@ async function handleGetUserDevMode(sess) {
 
 async function handleGetUserBySess(sess, userAgent) {
     if (sess){
-        return await internetAvailable({
-            timeout: 500,
-            retries: 5
-        })
-            .then( async () => {
-                const remoteUser = await handleRemoteUser(sess, userAgent);
-                await createAndSaveJwtTokens(remoteUser);
-                return remoteUser;
-            })
-            .catch( async (err) => {
-                logger.error('handleLocalUser - Error - ',err);
-                return await handleLocalUser(sess);
-            })
+        try {
+            const remoteUser = await handleRemoteUser(sess, userAgent);
+            await createAndSaveJwtTokens(remoteUser);
+            return remoteUser;
+        } catch (err) {
+            logger.error('handleLocalUser - Error - ',err);
+            return await handleLocalUser(sess);
+        }
     } else {
         throw 'sess is not available';
     }
@@ -60,7 +55,7 @@ async function handleRemoteUser(sess, userAgent) {
         }
     };
     user = await rp(options)
-        .then(async body => { return await handleResponse(JSON.parse(body), sess)})
+        .then(async body => { return await handleResponse(JSON.parse(body), sess) })
         .catch(err =>  { logger.error(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }
