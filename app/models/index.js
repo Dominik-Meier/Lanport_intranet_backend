@@ -24,6 +24,10 @@ db.teamMember = require("./teamMember.model") (sequelize, Sequelize);
 db.tournamentParticipant = require("./tournamentParticipant.model") (sequelize, Sequelize);
 db.appComponent = require('./appComponent.model') (sequelize, Sequelize);
 db.feedback = require('./feedback.model') (sequelize, Sequelize);
+db.survey = require('./survey') (sequelize, Sequelize);
+db.surveyQuestion = require('./surveyQuestion') (sequelize, Sequelize);
+db.surveyQuestionOption = require('./surveyQuestionOption') (sequelize, Sequelize);
+db.surveyQuestionUserAnswer = require('./surveyQuestionUserAnswer') (sequelize, Sequelize);
 
 // Associations appComponent
 db.appComponent.hasMany(db.appComponent, {as: 'appComponents'});
@@ -74,6 +78,23 @@ db.feedback.belongsTo(db.user)
 
 db.lanparty.hasMany(db.feedback);
 db.feedback.belongsTo(db.lanparty);
+
+// Associations Survey
+
+db.survey.hasMany(db.surveyQuestion, {onDelete: 'cascade'});
+db.surveyQuestion.belongsTo(db.survey);
+
+db.surveyQuestion.hasMany(db.surveyQuestionOption, {onDelete: 'cascade'});
+db.surveyQuestionOption.belongsTo(db.surveyQuestion);
+
+db.surveyQuestion.hasMany(db.surveyQuestionUserAnswer, {onDelete: 'cascade'});
+db.surveyQuestionUserAnswer.belongsTo(db.surveyQuestion);
+
+db.user.hasMany(db.surveyQuestionUserAnswer);
+db.surveyQuestionUserAnswer.belongsTo(db.user);
+
+db.surveyQuestionOption.hasMany(db.surveyQuestionUserAnswer);
+db.surveyQuestionUserAnswer.belongsTo(db.surveyQuestionOption);
 
 module.exports = db;
 

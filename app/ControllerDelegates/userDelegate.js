@@ -3,7 +3,6 @@ const User = db.user;
 const Session = db.session;
 const request = require('request');
 const rp = require('request-promise');
-const internetAvailable = require("internet-available");
 const {logger} = require('../../app')
 const jwt = require('jsonwebtoken')
 

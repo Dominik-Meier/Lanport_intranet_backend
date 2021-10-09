@@ -12,4 +12,5 @@ module.exports = app => {
     require("./tournamentParticipant.routes")(app);
     require("./challonge.routes")(app);
     require("./feedback.routes")(app);
+    require("./survey.routes")(app);
 };
