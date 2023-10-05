@@ -55,7 +55,7 @@ async function handleRemoteUser(sess, userAgent) {
         }
     };
     user = await rp(options)
-        .then(async body => { return await handleResponse(JSON.parse(body), sess) })
+        .then(async body => {  console.log('58 body: ', body); return await handleResponse(JSON.parse(body), sess) })
         .catch(err =>  { logger.error(err); throw 'Error during getting User from lanport.ch! Error: '.concat(err);})
     return user;
 }
@@ -71,6 +71,7 @@ async function handleLocalUser(sess) {
 }
 
 async function handleResponse(data, sess) {
+    console.log('74 data: ', data);
     let user = await User.findOne({where: {nickname: data.nickname}});
     if (user === null) {
         user = await User.create({
@@ -81,6 +82,7 @@ async function handleResponse(data, sess) {
             seat: data.party.platz_nr !== null ? data.party.platz_nr : '',
             level: data.level
         });
+        console.log('85 user: ', user);
         const session = await Session.create({sess: sess, userId: user.id});
         return user;
     } else {
